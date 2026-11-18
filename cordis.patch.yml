@@ -1,3 +1,9 @@
+# Migration: prevent the standard standalone voice row from mounting twice.
+# An absent row is a warned-and-skipped no-op on a fresh DSH profile.
+# If an administrator renamed that row, disable its bundle before installation.
+- id: dsh-voice
+  name: '@goodandready/dsh-voice'
+  disabled: true
 - insert:
     - id: local-dsh-thai
       name: 'dsh-ui-thai'

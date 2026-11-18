@@ -76,13 +76,15 @@ test('npm package, loader patch and client module share one public identity', ()
   let registration;
   vm.runInNewContext(source, { window: { __ModuleLoader__: { load: entry => { registration = entry; } } } });
   assert.equal(manifest.name, 'dsh-ui-thai');
-  assert.deepEqual(names, [manifest.name]);
+  assert.deepEqual(names, ['@goodandready/dsh-voice', manifest.name]);
+  assert.match(patch, /- id: dsh-voice\s+name: '@goodandready\/dsh-voice'\s+disabled: true/);
   assert.equal(registration.id, manifest.name);
   assert.match(patch, /^\s+- id: local-dsh-thai\s*$/m);
   assert(!Object.hasOwn(manifest, 'private'));
   assert.deepEqual(manifest.publishConfig, { access: 'public', registry: 'https://registry.npmjs.org/' });
   assert(manifest.keywords.includes('dsh-plugin') && manifest.keywords.includes('thai'));
-  assert.equal(manifest.scripts.prepublishOnly, 'node --test tests/pack.test.mjs && node tools/build.mjs --check && node --check client.js && node --check index.js');
+  assert.equal(manifest.scripts.prepublishOnly, 'npm test && npm run check && node --check bundle-client.js && node --check index.js');
+  assert.equal(manifest.scripts.test, 'node --test tests/*.test.mjs');
   for (const file of ['LICENSE', 'NOTICE', 'licenses', 'PUBLISHING.md']) assert(manifest.files.includes(file), `${file} must be published`);
 });
 
@@ -90,7 +92,8 @@ test('manifest exposes native client, locales, icon and patch without install sc
   const manifest = JSON.parse(fs.readFileSync(root + '/package.json', 'utf8'));
   assert.equal(manifest.name, 'dsh-ui-thai');
   assert.equal(manifest.engines.dsh, '0.2.2-rc.3');
-  assert.deepEqual(manifest.dsh.client.inject, ['@deepseek-ai/dsh-client-locale']);
+  assert.deepEqual(manifest.dsh.client.inject, ['@deepseek-ai/dsh-client-locale', '@deepseek-ai/dsh-client-ui-slots', '@deepseek-ai/dsh-client-ui-settings']);
+  assert.equal(manifest.exports['./client'], './bundle-client.js');
   assert.equal(manifest.dsh.client.immediately, true);
   for (const hook of ['prepare', 'preinstall', 'install', 'postinstall']) assert(!manifest.scripts[hook], `${hook} must not execute during installation`);
   for (const p of ['./index.js','./client.js','./icon.svg','./cordis.patch.yml','./locale/en.json','./locale/th.json','./LICENSE','./NOTICE','./licenses/Apache-2.0.txt','./PUBLISHING.md']) assert(fs.existsSync(root + '/' + p));

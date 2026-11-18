@@ -42,3 +42,18 @@ sources/hub-en.json, translated into translations/hub.json, and registered
 under the native dsh-plugin namespace in generated client.js. The upstream
 Hub's install backend is not included. A Hub version using the native locale
 translator is required; this package does not rewrite other plugins' files.
+
+Embedded voice implementation:
+@goodandready/dsh-voice 0.9.57
+https://github.com/GooDAnDReaDY/dsh-voice
+Copyright (c) 2026 GooDAnDReaDY, MIT License.
+The full license is retained in vendor/dsh-voice/LICENSE. Upstream commit,
+customization notes and per-file SHA-256 hashes are recorded in
+vendor/dsh-voice/PROVENANCE.json. This distribution includes the real Host
+backend and browser runtime, modified for opt-in hands-free sessions. The
+unified client changes the settings-card row target; the Host updater targets
+dsh-ui-thai. The public dsh-voice API/locale and credential namespace remains unchanged.
+DSH 0.2.2 stores settings by Loader entry id: an adapter targets local-dsh-thai;
+existing standalone settings require an explicit one-time migration.
+No separate upstream installation is required. This is a customized vendored
+copy, not an official upstream release or an endorsement by its authors.

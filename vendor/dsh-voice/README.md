@@ -1,0 +1,270 @@
+# 📦 @goodandready/dsh-voice
+
+<div align="center">
+
+<h3>Zero-Latency Streaming Dictation & Multi-Provider Voice Input for DeepSeek Harness</h3>
+
+<p align="center">
+  <a href="https://www.npmjs.com/package/@goodandready/dsh-voice"><img src="https://img.shields.io/npm/v/@goodandready/dsh-voice.svg?style=for-the-badge&color=6366f1&labelColor=1e1b4b" alt="npm version"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-10b981.svg?style=for-the-badge&color=10b981&labelColor=064e3b" alt="license"></a>
+  <a href="https://github.com/topics/dsh-plugin"><img src="https://img.shields.io/badge/DSH-Plugin-8b5cf6.svg?style=for-the-badge&labelColor=2e1065" alt="DSH Plugin"></a>
+  <a href="https://nodejs.org"><img src="https://img.shields.io/badge/Node-20%2B-f59e0b.svg?style=for-the-badge&labelColor=451a03" alt="Node version"></a>
+</p>
+
+<p align="center">
+  <a href="https://goodandready.app/"><img src="https://img.shields.io/badge/All_Author_Projects-goodandready.app-ff4500.svg?style=for-the-badge&logo=rocket&logoColor=white&labelColor=1a1a2e" alt="All Author Projects"></a>
+</p>
+
+<p align="center">
+  <a href="README.md"><b>🇬🇧 English</b></a> •
+  <a href="README.ru.md"><b>🇷🇺 Русский</b></a> •
+  <a href="README.zh.md"><b>🇨🇳 中文说明</b></a>
+</p>
+
+<table align="center">
+  <tr>
+    <td align="center">
+      ⭐ <strong>If you like this plugin, please star it on GitHub</strong> — it shows me that the plugin is useful to you and motivates me to keep developing it.
+      <br><br>
+      🐛 <strong>If you find a bug or would like to request a feature</strong>, open a GitHub issue in any language — I will review your proposal and implement useful suggestions in a future plugin version.
+    </td>
+  </tr>
+</table>
+
+</div>
+
+---
+
+## Requirements
+### Browser Microphone & Secure Context\nModern browsers require a **Secure Context** (`https://` or `http://localhost` / `http://127.0.0.1`) for microphone capture (`navigator.mediaDevices.getUserMedia`). When accessing DSH over a local network (e.g., `http://192.168.1.x:3080` via `dsh-lanmode`), browsers will block microphone access by default. Serve DSH behind an HTTPS reverse proxy or configure browser security flags (`chrome://flags/#unsafely-treat-insecure-origin-as-secure`) for LAN IP access.\n
+
+## ⚡ Overview
+
+**`dsh-voice`** brings voice superpowers to the **DeepSeek Harness** Web UI. Whether you need hands-free real-time streaming dictation segmented on natural breath pauses or crisp voice notes with keyboard/mouse Push-to-Talk gestures, `dsh-voice` ensures your audio is never lost thanks to **automatic multi-provider fallback chains**.
+
+```mermaid
+graph LR
+    subgraph Client [Browser Web UI]
+        Mic[🎙️ Dictation Mic] -->|VAD Cut on Pause| Stream[Audio Chunks]
+        Wave[🌊 Voice Message] -->|Hold / Release| PTT[Push-to-Talk]
+    end
+
+    subgraph Host [DSH Host Backend]
+        Stream --> FFMPEG[ffmpeg 16kHz Transcoder]
+        PTT --> FFMPEG
+        FFMPEG --> Chain{Fallback Chain}
+
+        Chain -->|1st Priority| P1[Deepgram / Nova-2]
+        Chain -.->|On Rate Limit / 429| P2[Groq / Whisper Turbo]
+        Chain -.->|On Failure| P3[Local whisper.cpp / Offline]
+    end
+
+    subgraph Output [Target]
+        P1 --> Composer[💬 Web Composer / Chat]
+        P2 --> Composer
+        P3 --> Composer
+    end
+
+    style Client fill:#1e1e2e,stroke:#89b4fa,stroke-width:2px,color:#cdd6f4
+    style Host fill:#181825,stroke:#cba6f7,stroke-width:2px,color:#cdd6f4
+    style Output fill:#11111b,stroke:#a6e3a1,stroke-width:2px,color:#cdd6f4
+```
+
+---
+
+## ✨ Key Features
+- 🎙️ **4 Dictation Post-Processing Modes (#264)**: Verbatim (0 LLM calls, raw STT), Clean text (punctuation & filler removal without fact alteration), Agent task (structured problem/goals/criteria), and Note (key thoughts & actions). Customizable prompt templates with 1-click default restore.
+- ⚡ **Dynamic Context-Aware Lexicon Boosting (#167)**: Gathers technical identifiers, code tokens, and vocabulary from composer drafts, recent chat history, and open code blocks, passing them as hints to Deepgram (`&keywords=...`), Groq, local-whisper, and SenseVoice.
+- 🎯 **Voice Action Macros (#167)**: User-defined spoken trigger phrases (e.g. "review code", "run tests") expand into structured prompt templates with `{text}` argument replacement.
+
+* 🎙️ **Streaming Dictation with VAD**: Speech is automatically sliced at natural pauses (`vadSilenceMs`, default 700ms) and typed into the composer in real time.
+* 🌊 **Voice Notes with Cancel Window**: Record your thought and have it automatically dispatched to the agent after a safety countdown (`autoSendMs`, default 4000ms).
+* 🎮 **Tactile Push-to-Talk**:
+  * **Mouse**: Hold the wave button — releasing sends the message; dragging pointer away discards.
+  * **Keyboard**: Hold <kbd>Ctrl</kbd> (or custom hotkey) for hands-free speaking; press <kbd>Esc</kbd> to cancel.
+* ⚡ **Live In-Browser Captions (`browser`)**: Web Speech API speech-to-text with real-time floating captions as you speak (Note: standard browser recognition typically streams audio to vendor servers like Google in Chrome; for true 100% offline privacy, use local `whisper` or `sensevoice`).
+* 🛡️ **Ironclad Multi-Provider Fallbacks**: If your primary cloud provider runs out of credits or hits a 429 rate limit, requests seamlessly fail over down the chain.
+* 🧠 **Context Glossary Injection**: Automatically extracts code variables and identifiers from your composer draft to steer STT model accuracy on technical jargon.
+* 🎵 **Embedded Audio Player**: Preview, scrubber, and playback of your recorded voice message directly in chat and the composer dock.
+* 🔇 **Hardware Noise Suppression Toggle**: Configurable in settings to toggle browser-level noise suppression, echo cancellation, and auto gain control.
+* 📊 **Provider Latency & Health Dashboard**: Live visual telemetry of provider latency (ms), success rates, and errors directly within the settings UI.
+* 🔒 **Zero API Key Leakage**: Keys are resolved on the host via `ctx.credentials` (`credentialRef`) and never transmitted to browser clients.
+* 🖥️ **Offline Local Whisper Server**: Automatically boots and manages [whisper.cpp](https://github.com/ggerganov/whisper.cpp) (`whisper-server`) with on-the-fly `ffmpeg` transcode.
+* ⚡ **SenseVoice-ONNX / Sherpa-ONNX** *(0.8.11, updated 0.8.32)*: Ultra-fast (~50–100ms) non-autoregressive local STT engine with 1-click automatic model installation to `~/.dsh/models/sensevoice`.
+* 🎙️ **Gated Turn-Taking & Echo Prevention** *(0.8.32)*: Automatically mutes the mic while the assistant is speaking (`dsh:tts:start`/`stop`) and supports speech-triggered Barge-In.
+* 👻 **Live Ghost Interim Preview** *(0.8.32)*: Visual real-time preview of spoken words before final chunk transcription.
+* ⏱️ **SVG Silence Ring Timer** *(0.8.32)*: Circular animated countdown indicator in the composer dock during the pending message delay.
+* 🗣️ **Hands-free Voice Actions** *(0.8.32)*: Spoken commands ("send", "cancel", "clear", "new line") trigger UI actions directly.
+* 🧩 **Structured Prompt Voice Selection** *(0.8.32)*: Spoken options automatically select buttons in interactive assistant choice prompts.
+* 📖 **Developer Lexicon & IT Jargon Correction** *(0.8.32)*: Phonetic normalization for developer slang (GitHub, Docker, Kubernetes, pnpm) with customizable settings dictionary.
+* 🌊 **Liquid Wave & Dynamic Orb Visualizer** *(0.8.12)*: Smooth animated audio visualization in the recording pill with real-time mic volume reactivity. Switch between organic multi-layer liquid waves, pulsating radiant orb, classic bars, or off.
+
+---
+
+## 📝 What's New in 0.8.32
+
+10-point feature epic & SenseVoice 1-Click Installer (Issue #129):
+
+| Area | Feature | Description |
+|------|---------|-------------|
+| Local ASR | **1-Click SenseVoice-Small** | Automated download and extraction of `model.int8.onnx` and `tokens.txt` directly to `~/.dsh/models/sensevoice` via host loopback endpoint. |
+| Turn-Taking | **Gated Mode** | Microphone input is muted when assistant audio starts (`dsh:tts:start`) and unmuted on `dsh:tts:stop`, eliminating acoustic feedback. |
+| Interruption | **Barge-In** | Speaking immediately signals assistant TTS to pause and abort current speech playback. |
+| Feedback | **Ghost Interim Preview** | Semi-transparent live text preview in composer pill during recognition before sentence finalizing. |
+| Countdown | **SVG Silence Ring** | Circular SVG progress ring visually ticking down pending auto-send delay. |
+| Control | **Hands-free Actions** | Spoken control words ("send", "cancel", "clear", "new line") trigger actions instead of becoming message text. |
+| Prompts | **Structured Prompts** | Spoken replies automatically match and submit options in active harness interactive prompts. |
+| Vocabulary | **IT Jargon Normalizer** | Auto-corrects spoken developer slang to canonical spelling (GitHub, Docker, Kubernetes, etc.) with custom dictionary in Settings. |
+| Configuration | **Individual Toggles** | Dedicated switches for every enhancement in Settings card with native `--dsw-alias-*` token styling. |
+
+---
+
+## 📝 What's New in 0.8.19
+
+Quality batch after the v0.8.18 review (Gitea #79–#87, PR #88):
+
+| Area | Change |
+|------|--------|
+| Settings placeholders | Model/path hints resolve through locale at **render time** — no frozen i18n keys (#79) |
+| Model field hints | `whisperModel` / `sensevoiceModel` show path-to-model copy, not binary-autostart hints (#82) |
+| Visualizer | Liquid wave / dynamic orb read **DSH theme tokens** instead of hardcoded hex (#80) |
+| Style isolation | Injected CSS uses `data-dsh-plugin="dsh-voice"` so neighbour HMR cleanup cannot strip styles (#81) |
+| Source language | Code comments, errors, and tests are English; EN edit-command phrases added. Spoken RU STT patterns remain for recognition (#86) |
+| Locales | **Changed:** the full inline `ru` dictionary was removed. English is the only bundled locale. Install the translation plugin for Russian UI (#85) |
+| Client source | Browser client is built from ordered `lib/client-src/*.js` fragments via `npm run build:client` (#87) |
+| Process docs | Standardized internal project documentation and test suites (#83) |
+
+> [!IMPORTANT]
+> **v0.8.19 locale behavior:** without a translation plugin the Web UI stays in English. Session/edit **spoken** command phrases still match Russian speech for STT where documented; interface labels do not ship a second dictionary.
+
+---
+
+## 🎮 Four Ways to Speak
+
+| Mode | Gesture / Trigger | Behavior |
+|---|---|---|
+| **Dictation** | Click <kbd>🎙️ Mic</kbd> | Speech is sliced on pauses (`vadSilenceMs`) and typed live into composer |
+| **Voice Message** | Click <kbd>🌊 Wave</kbd> | Records until stopped, then sends after cancel window (`autoSendMs`) |
+| **Mouse PTT** | Hold <kbd>🌊 Wave</kbd> | Records while held; release sends message, drag off button to discard |
+| **Keyboard PTT** | Hold <kbd>Ctrl</kbd> | Hands-free recording; release sends message, press <kbd>Esc</kbd> to discard |
+
+> [!TIP]
+> You can customize the keyboard modifier in settings (`hotkey`: `Control`, `Alt`, `Shift`, or any `KeyboardEvent.code`).
+
+---
+
+## 🛠️ Supported Providers Matrix
+
+| Provider Key | Service Backend | Default Model | Credential Ref | Features & Notes |
+|---|---|---|---|---|
+| `browser-webgpu` | In-Browser WebGPU/WASM Whisper | `onnx-community/whisper-tiny` | *None* | 100% private offline client-side GPU transcription; falls back to server chain |
+| `browser` | Web Speech API | Native Browser | *None* | Zero latency, floating live captions in Chrome (vendor server-based; not offline) |
+| `deepgram` | Deepgram API | `nova-2` | `DEEPGRAM_API_KEY` | Ultra-fast cloud transcription |
+| `groq` | Groq Whisper | `whisper-large-v3-turbo` | `GROQ_API_KEY` | Near-instant inference speed |
+| `hf` | HuggingFace Inference | `openai/whisper-large-v3` | `HF_TOKEN` | High-accuracy open Whisper |
+| `local-whisper` | Local whisper.cpp | Server defined | *None* | 100% private, offline, no internet needed |
+| `sensevoice` | SenseVoice-ONNX / Sherpa-ONNX | `SenseVoiceSmall` | *None* | Ultra-fast (~50ms) local STT; supports Rockchip RK3588 NPU (rknpu), OpenVINO, CUDA |
+
+### 🚀 Ready-Made Presets (Plug & Play)
+
+Just specify the name in your fallback chain and add the corresponding API key:
+* `openai` (`whisper-1`) → `OPENAI_API_KEY`
+* `siliconflow` (`SenseVoiceSmall`) → `SILICONFLOW_API_KEY`
+* `mistral` (`voxtral-mini-latest`) → `MISTRAL_API_KEY`
+* `openrouter` (`google/gemini-2.5-flash`) → `OPENROUTER_API_KEY`
+* `deepinfra` (`whisper-large-v3-turbo`) → `DEEPINFRA_API_KEY`
+* `fireworks` (`whisper-v3-turbo`) → `FIREWORKS_API_KEY`
+
+---
+
+## 📦 Quick Installation
+
+```bash
+dsh plugin --profile web add @goodandready/dsh-voice
+```
+
+> [!IMPORTANT]
+> Restart DSH Web UI after installation (`systemctl --user restart dsh-web`) and refresh your browser tab.
+
+---
+
+## ⚙️ Configuration
+
+Open **Settings → Plugins → Plugin settings → Voice** in the Web UI:
+
+```yaml
+- id: dsh-voice
+  config:
+    dictation:
+      language: "" # auto-detect by default; or specify "en", "ru", "zh", etc.
+      vadSilenceMs: 700
+      chain:
+        - provider: deepgram
+        - provider: groq
+        - provider: local-whisper
+    message:
+      language: "" # auto-detect by default; or specify "en", "ru", "zh", etc.
+      autoSendMs: 4000
+      chain:
+        - provider: openai
+        - provider: local-whisper
+    hotkey: Control
+    autoStart: true
+    whisperModel: /models/ggml-medium-q8_0.bin
+    # Composer button visibility toggles (default: true)
+    showDictationModeButton: true # Mode selector pill ([Clean], [Task], [Bug], [Note], [Verbatim])
+    showDictationButton: true     # Voice typing / mic button
+    showMessageButton: true       # Voice note / message button
+```
+
+> **Composer button visibility (#326, #328)**:
+> The `showDictationModeButton`, `showDictationButton`, and `showMessageButton` settings allow independently toggling the visibility of voice action buttons in the composer area (`conversation.input.right`).
+> - When a button is disabled, it is cleanly removed from the interface across both current and newly opened chat tabs.
+> - When all three buttons are disabled, the container returns `null` and unmounts with zero DOM footprint.
+> - Settings persist reliably across application restarts in both Desktop and Web profiles (saved in `cordis.patch.yml`).
+> - Underlying voice functionality (including keyboard push-to-talk with `hotkey: Control`, Silero VAD, and STT pipelines) remains fully active.
+> - Primary navigation buttons (`Remote`, `Tasks`, `Kanban`, `Scheduled Tasks`) belong to separate core slots and remain completely unaffected.
+
+> **Note on language handling**: Setting `language: ""` (default) allows providers to auto-detect the spoken language. Spoken numeral normalization (`wordsToDigits`) and standard Russian tech slang correction (`DEFAULT_JARGON_DICTIONARY`) activate conditionally only when Russian is selected or auto-detected in the transcript, ensuring non-Russian speech is never distorted.
+
+---
+
+## 🤖 Agent Tool & HTTP API
+
+### Agent Tool (`transcribe_audio`)
+Registers `transcribe_audio(file_path, language?)` in `ctx.tools`, allowing agents to analyze audio files, interview recordings, and voice notes directly from disk. Path containment is strictly enforced against allowed directories (`allowedAudioDirs`, `~/.dsh`, `tmpdir`, `cwd`) with symlink traversal escape prevention and magic-byte audio format validation.
+
+### Internal HTTP & WebSocket Endpoints
+* `GET /dsh-voice/ws/stream` — RFC 6455 WebSocket streaming channel for real-time dictation with interim transcription previews (`{ type: 'interim', text }`) and final transcript dispatch (`{ type: 'final', text, action, provider }`). Authenticated via `hasSameOrigin` or `x-dsh-voice-token` (#282, #292).
+* `POST /dsh-voice/transcribe` — `{ dataBase64, mimeType, mode }` → `{ ok, text, provider, tookMs }`
+* `POST /dsh-voice/polish` — `{ text }` → `{ ok, text }`
+* `GET /dsh-voice/status` — Returns daemon status, active chains, SenseVoice and `effectiveSensevoiceProvider`. Emits `sessionToken` exclusively to verified same-origin callers (#292).
+* `GET /dsh-voice/config` — Returns live plugin configuration snapshot.
+* `PUT /dsh-voice/config` — Updates and persists plugin configuration across network with automatic session token rotation (#292).
+* `GET/POST /dsh-voice/sensevoice-installer` — SenseVoice 1-click model installation status and trigger (protected by `isTrustedCaller`, model paths redacted).
+* `POST /api/dsh-voice/update` — Triggers plugin self-update to latest compatible npm version (protected by local caller verification and profile lock check).
+* `GET /api/dsh-voice/update` — Returns update check status (current version, latest version, updateAvailable).
+
+> **Security & Quota Protections (#292, #293)**: State-changing HTTP routes and WebSocket upgrades enforce strict same-origin verification and token authentication against reverse LAN bridges (such as `dsh-lanmode`), preventing unauthorized configuration changes or quota depletion. Real-time interim WebSocket streaming processes only the latest audio chunk ($O(N)$ linear byte consumption) and restricts recognition strictly to local engines (`local-whisper`, `sensevoice`, `browser-webgpu`), ensuring zero cloud quota consumption during interim speech preview.
+
+### 🔒 Profile Lock & Controlled Operator Recovery Policy
+When updating or installing plugins, DeepSeek Harness profiles coordinate concurrent operations using `<profile-dir>/package.json.lock` (for example, `~/.dsh/profiles/<profile>/package.json.lock`).
+* **Canonical Contender Policy**: The contender process never deletes or unlinks an existing lockfile. Automatic stale lock removal by contenders is prohibited to eliminate TOCTOU (Time-of-Check to Time-of-Use) race conditions and prevent unintended lockfile clobbering.
+* **Diagnostics**: If `<profile-dir>/package.json.lock` is present, update attempts return `409 Conflict` with clear diagnostics:
+  - If held by an active process, the PID is reported.
+  - If filesystem inspection encounters access errors (`EACCES`, `EIO`), the operation fails closed with the error code preserved. Filesystem errors require inspecting filesystem health, permissions, or mount options — **do not** remove the lockfile in response to `EACCES`/`EIO`.
+* **Controlled Operator Recovery Workflow**:
+  If a previous installation was forcefully interrupted (e.g. system crash, OOM kill) leaving a stale lockfile, recovery is strictly an operator action and must follow this controlled procedure:
+  1. **Establish Exclusive Maintenance**: Ensure no concurrent processes, CLI commands (`dsh plugin add`), web UI operations, or automated updaters are running or scheduled to start for the target profile.
+  2. **Verify Quiescence and Ownership**: Check for active processes (`pgrep`, `ps`, `fuser`, or `lsof`) to confirm that no live process is currently performing package operations in the target profile directory. Lock age alone or observing an unparsed PID is **not** sufficient justification to delete a lock while another installer could start. If quiescence or non-ownership cannot be verified, do not remove the lock.
+  3. **Remove Confirmed Orphan Lock**: Only after confirming the lock is an orphan and exclusive maintenance is established, remove the specific profile lock without recursive or force flags:
+     ```bash
+     rm ~/.dsh/profiles/<profile>/package.json.lock
+     ```
+  4. **Resume Operations**: Re-enable installations and retry the plugin update.
+
+---
+
+## 📄 License
+
+MIT © [GooDAnDReaDY](https://github.com/GooDAnDReaDY)

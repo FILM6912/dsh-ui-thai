@@ -9,3 +9,10 @@ tools/check-registration.cjs
 !.env.example
 .DS_Store
 Thumbs.db
+# Working upstream checkout; publish only the reviewed vendor snapshot.
+/dsh-voice/
+/inspect-dsh.cjs
+/inspect-dsh.out
+/inspect-dsh.err
+# Local investigation helpers, not release sources.
+/tools/inspect-*-contract.cjs

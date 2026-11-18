@@ -1,0 +1,221 @@
+# 📦 @goodandready/dsh-voice
+
+<div align="center">
+
+<h3>DeepSeek Harness 零延迟流式语音听写与多服务商对讲输入插件</h3>
+
+<p align="center">
+  <a href="https://www.npmjs.com/package/@goodandready/dsh-voice"><img src="https://img.shields.io/npm/v/@goodandready/dsh-voice.svg?style=for-the-badge&color=6366f1&labelColor=1e1b4b" alt="npm version"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-10b981.svg?style=for-the-badge&color=10b981&labelColor=064e3b" alt="license"></a>
+  <a href="https://github.com/topics/dsh-plugin"><img src="https://img.shields.io/badge/DSH-Plugin-8b5cf6.svg?style=for-the-badge&labelColor=2e1065" alt="DSH Plugin"></a>
+  <a href="https://nodejs.org"><img src="https://img.shields.io/badge/Node-20%2B-f59e0b.svg?style=for-the-badge&labelColor=451a03" alt="Node version"></a>
+</p>
+
+<p align="center">
+  <a href="https://goodandready.app/"><img src="https://img.shields.io/badge/作者全部项目-goodandready.app-ff4500.svg?style=for-the-badge&logo=rocket&logoColor=white&labelColor=1a1a2e" alt="作者全部项目"></a>
+</p>
+
+<p align="center">
+  <a href="README.md"><b>🇬🇧 English</b></a> •
+  <a href="README.ru.md"><b>🇷🇺 Русский</b></a> •
+  <a href="README.zh.md"><b>🇨🇳 中文说明</b></a>
+</p>
+
+<table align="center">
+  <tr>
+    <td align="center">
+      ⭐ <strong>如果您喜欢这个插件，请在 GitHub 上为它点亮 Star</strong> — 这能让我知道插件对您有用，并鼓励我继续开发和维护它。
+      <br><br>
+      🐛 <strong>如果您发现 Bug 或希望增加功能</strong>，请使用任意语言在 GitHub 上提交 Issue — 我会评估您的建议，并在后续版本中实现有价值的改进。
+    </td>
+  </tr>
+</table>
+
+</div>
+
+---
+
+## 运行要求
+### 浏览器麦克风与安全上下文 (Secure Context)\n现代浏览器要求在**安全上下文**（`https://` 或 `http://localhost` / `http://127.0.0.1`）下才允许调用麦克风接口（`navigator.mediaDevices.getUserMedia`）。当通过局域网以普通 HTTP 访问 DSH（如使用 `dsh-lanmode` 访问 `http://192.168.1.x:3080`）时，浏览器默认会阻止录音。在局域网环境下，请配置 HTTPS 反向代理，或在浏览器中启用标志（`chrome://flags/#unsafely-treat-insecure-origin-as-secure`）。\n
+
+## ⚡ 插件概览
+
+**`dsh-voice`** 为 **DeepSeek Harness** Web 界面带来极速语音交互体验。无论是按自然停顿切分的流式听写，还是带撤回保护的语音消息以及键盘/鼠标 Push-to-Talk 对讲，`dsh-voice` 凭借**多服务商自动故障转移备用链**确保您的录音万无一失。
+
+```mermaid
+graph LR
+    subgraph Client [前端 Web 浏览器]
+        Mic[🎙️ 听写麦克风] -->|VAD 停顿切分| Stream[音频数据切片]
+        Wave[🌊 语音消息] -->|长按 / 松开| PTT[Push-to-Talk]
+    end
+
+    subgraph Host [DSH 服务端 Host]
+        Stream --> FFMPEG[ffmpeg 16kHz 转码器]
+        PTT --> FFMPEG
+        FFMPEG --> Chain{备用链轮询}
+
+        Chain -->|首选优先级| P1[Deepgram / Nova-2]
+        Chain -.->|遭遇限流 / 429| P2[Groq / Whisper Turbo]
+        Chain -.->|异常故障时| P3[本地 whisper.cpp / 离线]
+    end
+
+    subgraph Output [输出目标]
+        P1 --> Composer[💬 聊天输入框]
+        P2 --> Composer
+        P3 --> Composer
+    end
+
+    style Client fill:#1e1e2e,stroke:#89b4fa,stroke-width:2px,color:#cdd6f4
+    style Host fill:#181825,stroke:#cba6f7,stroke-width:2px,color:#cdd6f4
+    style Output fill:#11111b,stroke:#a6e3a1,stroke-width:2px,color:#cdd6f4
+```
+
+---
+
+## ✨ 核心亮点
+- 🎙️ **4 种听写后处理模式 (#264)**：逐字直录（0 次 LLM 调用）、清爽文本（整理标点符号与语气词）、智能体任务（结构化问题、目标与验收标准）、便签备忘（要点与行动项）。支持自定义提示词模板与一键重置。
+- ⚡ **动态会话上下文词汇增强 (#167)**：自动提取输入框草稿、会话消息与代码块中的专业术语，透传给 Deepgram、Groq、local-whisper 与 SenseVoice 识别引擎。
+- 🎯 **语音动作宏指令 (#167)**：语音短语（如“做代码审查”、“运行测试”）自动展开为带有 `{text}` 参数替换的结构化提示词模板。
+
+* 🎙️ **VAD 智能流式听写**：说话停顿自动切句（`vadSilenceMs`，默认 700ms），文字实时追加至输入框。
+* 🌊 **带撤回窗口的语音消息**：录制完整语音，转写后在倒计时（`autoSendMs`，默认 4000ms）结束后自动发送。
+* 🎮 **沉浸式 Push-to-Talk 对讲**：
+  * **鼠标操作**：按住声波按钮开始录音，松开发送，拖离按钮取消。
+  * **键盘操作**：按住 <kbd>Ctrl</kbd> 无需鼠标即刻说话，按 <kbd>Esc</kbd> 放弃本次录音。
+* ⚡ **浏览器实时同声字幕 (`browser`)**：Web Speech API 实时语音识别与浮动同声字幕（注意：Chrome 等标准浏览器通常将音频发送至服务商云端解析；若需 100% 本地离线隐私保护，请使用本地 `whisper` 或 `sensevoice`）。
+* 🛡️ **多服务商自动容灾切换**：首选 API 额度耗尽或遭遇 429 限流时，毫秒级顺位切换备用引擎。
+* 🧠 **上下文术语注入 (Context Glossary)**：自动从输入草稿中提取代码变量名与专业术语，引导 STT 模型精准转写专业词汇。
+* 🎵 **内嵌音频播放器**：在输入框与录音浮层中随时试听和回放刚刚录制的原始音频片段。
+* 🔇 **硬件降噪切换开关**：在插件设置中自由开关浏览器级降噪、回声消除与自动增益控制。
+* 📊 **服务商延迟与健康监控看板**：在设置界面实时掌握每个语音引擎的延迟（毫秒）、成功率与调用状态。
+* 🔒 **API 密钥安全隔离**：密钥由服务端 `ctx.credentials` 统一解析，绝不向浏览器前端泄漏。
+* 🖥️ **本地 whisper.cpp 服务端直连**：自动管理 `whisper-server` 进程，结合 `ffmpeg` 实现实时音频转码。
+* ⚡ **SenseVoice-ONNX / Sherpa-ONNX** *(0.8.11)*：超快速（~50–100ms）非自回归本地语音识别引擎，自动清除情绪/事件标签。支持 Sherpa-ONNX HTTP 和 OpenAI 兼容端点。
+* 🌊 **Liquid Wave 与 Dynamic Orb 动态可视化** *(0.8.12)*：录音面板内的生动波形动态可视化，实时响应麦克风音量。可选平滑流动波浪、发光脉冲球体、经典频条或关闭。
+
+---
+
+## 📝 0.8.19 更新说明
+
+v0.8.18 质量审查后的修复批次（Gitea #79–#87，PR #88）：
+
+- 设置占位提示在**渲染时**通过 locale 解析，不再冻结为 i18n key（#79）
+- `whisperModel` / `sensevoiceModel` 使用模型路径提示（#82）
+- 可视化器改用 DSH 主题 token，不再硬编码颜色（#80）
+- 样式标签使用 `data-dsh-plugin="dsh-voice"`，避免邻居插件 HMR 清理误删（#81）
+- 源码语言统一为英文；界面不再内置完整 `ru` 词典（#85）
+- 浏览器端源码拆分为 `lib/client-src/*.js`，由 `npm run build:client` 构建（#87）
+
+> [!IMPORTANT]
+> **v0.8.19 语言说明：** 未安装 translation 插件时，Web UI 保持英文。
+
+---
+
+## 🎮 四种语音输入方式
+
+| 交互模式 | 触发手势 | 行为效果 |
+|---|---|---|
+| **流式听写** | 单击 <kbd>🎙️ 麦克风</kbd> | 按停顿切分语音 (`vadSilenceMs`)，文本实时录入输入框 |
+| **语音消息** | 单击 <kbd>🌊 声波</kbd> | 持续录音至手动停止，转写后进入撤回倒计时 (`autoSendMs`) |
+| **鼠标对讲** | 长按 <kbd>🌊 声波</kbd> | 按住录音；松开发送，光标拖出按钮区域取消 |
+| **键盘对讲** | 按住 <kbd>Ctrl</kbd> | 免鼠标快捷 Push-to-Talk 录音；按 <kbd>Esc</kbd> 取消 |
+
+---
+
+## 🛠️ 服务商矩阵
+
+| 服务商标识 | 对应引擎 | 默认模型 | 环境变量凭据 | 特性说明 |
+|---|---|---|---|---|
+| `browser` | Web Speech API | 浏览器原生引擎 | *无需密钥* | 零延迟同声字幕输出（依赖浏览器厂商云端解析；非离线本地） |
+| `deepgram` | Deepgram API | `nova-2` | `DEEPGRAM_API_KEY` | 极速高精云端转写 |
+| `groq` | Groq Whisper | `whisper-large-v3-turbo` | `GROQ_API_KEY` | 毫秒级极速推理 |
+| `hf` | HuggingFace Inference | `openai/whisper-large-v3` | `HF_TOKEN` | 经典高精度开源模型 |
+| `local-whisper` | 本地 whisper.cpp | 启动参数指定 | *无需密钥* | 100% 离线私密运行 |
+| `sensevoice` | SenseVoice-ONNX / Sherpa-ONNX | `SenseVoiceSmall` | *无需密钥* | 超快速（~50ms）本地非自回归 STT |
+
+---
+
+## 🤖 智能体工具与 HTTP 端点
+
+### 智能体工具 (`transcribe_audio`)
+在 `ctx.tools` 中注册 `transcribe_audio(file_path, language?)`，允许智能体直接读取和转写本地音频文件。包含严格的目录边界检查（`allowedAudioDirs`、`~/.dsh`、`tmpdir`、`cwd`）、符号链接越界防护以及音频特征码（magic bytes）校验。
+
+### 内部 HTTP 端点
+
+* `POST /dsh-voice/transcribe` — 音频转写：`{ dataBase64, mimeType, mode }` → `{ ok, text, provider, tookMs }`
+* `POST /dsh-voice/polish` — 文本模型润色：`{ text }` → `{ ok, text }`
+* `GET /dsh-voice/status` — 查询后端状态、服务商健康度、SenseVoice 及 effectiveSensevoiceProvider
+* `GET /dsh-voice/config` — 获取插件运行时配置快照
+* `PUT /dsh-voice/config` — 跨网络安全持久化更新插件配置
+* `GET/POST /dsh-voice/sensevoice-installer` — SenseVoice 一键模型安装状态与触发接口（受 `isTrustedCaller` 保护，绝对路径脱敏）
+* `POST /api/dsh-voice/update` — 触发插件自动更新至 npm 最新兼容版本（受本地调用与锁校验保护）
+* `GET /api/dsh-voice/update` — 获取更新检查状态与版本信息
+
+### 🔒 配置文件锁与受控操作员恢复机制
+在安装或更新插件时，DeepSeek Harness 使用 `<profile-dir>/package.json.lock`（例如 `~/.dsh/profiles/<profile>/package.json.lock`）协调并发操作。
+* **规范竞争者策略**: 竞争者进程绝不删除现有的锁定文件。禁止竞争者自动清理残留锁，以杜绝 TOCTOU 竞态条件并避免破坏配置文件状态。
+* **诊断信息**: 若存在 lock 文件，更新请求将返回 `409 Conflict` 并附带诊断说明：
+  - 若由活跃进程持有，则报告其 PID。
+  - 若遭遇文件系统访问错误（`EACCES`、`EIO`），则安全失败（fail-closed）并保留错误码。文件系统错误需要检查磁盘健康度、目录权限或挂载选项——**请勿**因 `EACCES`/`EIO` 错误而删除锁文件。
+* **受控操作员恢复流程**:
+  若先前安装进程异常终止（如 OOM 终止或系统断电）留下僵死锁，必须由操作员按以下受控流程进行清理：
+  1. **建立独占维护窗口**: 确保目标配置文件当前没有正在运行或计划启动的并发安装任务（CLI 命令 `dsh plugin add`、Web UI 交互或自动更新器）。
+  2. **确认静止状态与无活跃属主**: 通过 `pgrep`、`ps`、`fuser` 或 `lsof` 确认目标配置文件目录下确实没有正在执行包操作的活跃进程。仅凭锁文件存在时间较长或 PID 未能解析**不足以**作为删除依据，前提必须是彻底排除其他进程启动的可能。若无法确认静止状态，切勿删除。
+  3. **安全删除已确认的孤立锁**: 只有在完全确认锁文件已孤立且处于维护窗口期时，才允许由操作员手动删除该特定锁文件（严禁使用递归或 force 标志）：
+     ```bash
+     rm ~/.dsh/profiles/<profile>/package.json.lock
+     ```
+  4. **恢复正常运行**: 重新开启安装通道并重试插件更新。
+
+---
+
+## ⚙️ 配置说明
+
+在 Web UI 中打开 **设置 → 插件 → 插件设置 → Voice**：
+
+```yaml
+- id: dsh-voice
+  config:
+    dictation:
+      language: "" # 默认自动检测；或指定 "zh"、"en"、"ru" 等
+      vadSilenceMs: 700
+      chain:
+        - provider: deepgram
+        - provider: groq
+        - provider: local-whisper
+    message:
+      language: "" # 默认自动检测；或指定 "zh"、"en"、"ru" 等
+      autoSendMs: 4000
+      chain:
+        - provider: openai
+        - provider: local-whisper
+    hotkey: Control
+    autoStart: true
+    whisperModel: /models/ggml-medium-q8_0.bin
+    # 输入框按钮可见性开关（默认：true）
+    showDictationModeButton: true # 听写模式选择胶囊 ([Clean], [Task], [Bug], [Note], [Verbatim])
+    showDictationButton: true     # 语音输入 / 麦克风按钮
+    showMessageButton: true       # 语音消息按钮
+```
+
+> **输入框按钮可见性 (#326, #328)**：
+> `showDictationModeButton`、`showDictationButton` 与 `showMessageButton` 支持在输入框右侧（`conversation.input.right`）独立显示或隐藏按钮。
+> - 单独关闭时，按钮在当前及新建会话中立即隐藏。
+> - 全部关闭时，容器组件返回 `null` 并完全卸载，零 DOM 残留。
+> - 设置在 Desktop 与 Web 环境下重启均可靠持久化（保存在 `cordis.patch.yml` 中）。
+> - 底层语音功能（快捷键对讲 `hotkey: Control`、VAD 停顿检测及转写链路）保持完全可用。
+> - 主导航按钮（Remote、Tasks、Kanban、Scheduled Tasks）属于系统核心独立槽位，完全不受影响。
+
+---
+
+## 📦 安装指南
+
+```bash
+dsh plugin --profile web add @goodandready/dsh-voice
+```
+
+---
+
+## 📄 开源协议
+
+MIT © [GooDAnDReaDY](https://github.com/GooDAnDReaDY)

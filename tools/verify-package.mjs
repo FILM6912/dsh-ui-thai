@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import { gunzipSync } from 'node:zlib';
 import vm from 'node:vm';
+import { createHash } from 'node:crypto';
 
 const archivePath = process.argv[2];
 assert(archivePath, 'Usage: node tools/verify-package.mjs <npm-pack.tgz>');
@@ -22,7 +23,14 @@ for (let offset = 0; offset + 512 <= archive.length;) {
   files.set(name.slice('package/'.length), archive.subarray(offset + 512, offset + 512 + size).toString('utf8'));
   offset += 512 + Math.ceil(size / 512) * 512;
 }
-const expectedFiles = ['LICENSE', 'NOTICE', 'PUBLISHING.md', 'PLUGIN-HUB.md', 'README.md', 'client.js', 'compat/plugin-hub-native-locale.patch', 'cordis.patch.yml', 'icon.svg', 'index.js', 'licenses/Apache-2.0.txt', 'licenses/DSH-Plugin-Hub-MIT.txt', 'locale/en.json', 'locale/th.json', 'package.json'];
+const provenance = JSON.parse(files.get('vendor/dsh-voice/PROVENANCE.json'));
+assert.match(provenance.upstreamCommit, /^[a-f0-9]{40}$/);
+for (const required of ['LICENSE', 'package.json', 'lib/client.js', 'lib/index.js', 'lib/schema.js', 'lib/server-routes.js']) assert(Object.hasOwn(provenance.files, required));
+for (const [name, digest] of Object.entries(provenance.files)) {
+  assert(!/(^|\/)(\.git|node_modules)(\/|$)/.test(name));
+  assert.equal(createHash('sha256').update(files.get('vendor/dsh-voice/' + name)).digest('hex'), digest, name);
+}
+const expectedFiles = ['CHANGELOG.md', 'LICENSE', 'NOTICE', 'PUBLISHING.md', 'PLUGIN-HUB.md', 'README.md', 'voice-settings-adapter.js', 'client.js', 'bundle-client.js', 'compat/plugin-hub-native-locale.patch', 'cordis.patch.yml', 'icon.svg', 'index.js', 'licenses/Apache-2.0.txt', 'licenses/DSH-Plugin-Hub-MIT.txt', 'locale/en.json', 'locale/th.json', 'package.json', 'vendor/dsh-voice/PROVENANCE.json', ...Object.keys(provenance.files).map(name => 'vendor/dsh-voice/' + name)];
 assert.deepEqual([...files.keys()].sort(), expectedFiles.sort());
 const manifest = JSON.parse(files.get('package.json'));
 assert.equal(manifest.name, 'dsh-ui-thai');
@@ -30,6 +38,11 @@ assert.notEqual(manifest.private, true);
 assert.equal(new URL(manifest.publishConfig.registry).href, 'https://registry.npmjs.org/');
 assert.equal(manifest.publishConfig.access, 'public');
 assert.match(files.get('cordis.patch.yml'), /^\s+name:\s*['"]?dsh-ui-thai['"]?\s*$/m);
+const publicEntries = [];
+assert.equal(manifest.exports['./client'], './bundle-client.js');
+vm.runInNewContext(files.get('bundle-client.js'), { window: { __ModuleLoader__: { load(value) { publicEntries.push(value); } } } });
+assert.equal(publicEntries.length, 1);
+assert.equal(publicEntries[0].id, manifest.name);
 let entry;
 vm.runInNewContext(files.get('client.js'), { window: { __ModuleLoader__: { load(value) { entry = value; } } } });
 assert.equal(entry.id, manifest.name);
