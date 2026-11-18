@@ -22,7 +22,7 @@ for (let offset = 0; offset + 512 <= archive.length;) {
   files.set(name.slice('package/'.length), archive.subarray(offset + 512, offset + 512 + size).toString('utf8'));
   offset += 512 + Math.ceil(size / 512) * 512;
 }
-const expectedFiles = ['LICENSE', 'NOTICE', 'PUBLISHING.md', 'README.md', 'client.js', 'cordis.patch.yml', 'icon.svg', 'index.js', 'licenses/Apache-2.0.txt', 'locale/en.json', 'locale/th.json', 'package.json'];
+const expectedFiles = ['LICENSE', 'NOTICE', 'PUBLISHING.md', 'PLUGIN-HUB.md', 'README.md', 'client.js', 'compat/plugin-hub-native-locale.patch', 'cordis.patch.yml', 'icon.svg', 'index.js', 'licenses/Apache-2.0.txt', 'licenses/DSH-Plugin-Hub-MIT.txt', 'locale/en.json', 'locale/th.json', 'package.json'];
 assert.deepEqual([...files.keys()].sort(), expectedFiles.sort());
 const manifest = JSON.parse(files.get('package.json'));
 assert.equal(manifest.name, 'dsh-ui-thai');
@@ -44,8 +44,8 @@ entry.factory().apply({
     register(namespace, locale, dictionary) { assert.equal(locale, 'th'); count++; keys += Object.keys(dictionary).length; return () => { releases++; }; },
   },
 });
-assert.equal(count, 67);
-assert.equal(keys, 3491);
+assert.equal(count, 68);
+assert.equal(keys, 3965);
 cleanup();
-assert.equal(releases, 68);
+assert.equal(releases, 69);
 console.log(`PASS packed artifact: ${files.size} files, matching package/module/patch names, ${keys} keys, lifecycle cleanup`);

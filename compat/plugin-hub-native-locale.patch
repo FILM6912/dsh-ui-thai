@@ -1,0 +1,690 @@
+diff --git a/src/client/components/PluginHubSection.tsx b/src/client/components/PluginHubSection.tsx
+index 75ab2fe..2023646 100644
+--- a/src/client/components/PluginHubSection.tsx
++++ b/src/client/components/PluginHubSection.tsx
+@@ -39,7 +39,7 @@ import type { InstalledItem } from '../logic/installed.ts'
+ import { issueRepoOf, pluginOfItem } from '../logic/installed.ts'
+ 
+ export function PluginHubSection({ t: _hostT, locale }: SectionProps) {
+-  const { lang, langKey, langPath, t, toggleLang } = useLanguage(locale)
++  const { lang, langKey, langPath, t, toggleLang, nextLanguageLabel } = useLanguage(locale)
+   const catalog = useCatalog(lang)
+   /** 设置状态：服务端 hub-settings.json 持久化，本地乐观更新即时生效 */
+   const { settings: hubSettings, ready: settingsReady, update: updateSettings, reset: resetSettings } = useSettings()
+@@ -426,6 +426,7 @@ export function PluginHubSection({ t: _hostT, locale }: SectionProps) {
+       statsTotal,
+       statsVerified,
+       onToggleLang: toggleLang,
++      nextLanguageLabel,
+       // Hub 自身版本信息入口：版本号常驻可点（无更新也看得到当前版本更新内容），
+       // 有可用更新时版本号后紧跟红色「可更新」徽标（同一入口），点击都打开同一个更新说明弹窗。
+       // 有更新弹窗显示新版本 + Markdown 变更记录，点「直接更新」进安装弹窗覆盖重装。
+@@ -614,6 +615,7 @@ export function PluginHubSection({ t: _hostT, locale }: SectionProps) {
+       tasks: queue.queue,
+       pendingRestarts: queue.pendingRestarts,
+       t,
++      lang,
+       env,
+       onClose: () => setShowNotifications(false),
+       onCopy: (text) => {
+diff --git a/src/client/components/catalog/PluginCard.tsx b/src/client/components/catalog/PluginCard.tsx
+index 0b1412d..458cbe4 100644
+--- a/src/client/components/catalog/PluginCard.tsx
++++ b/src/client/components/catalog/PluginCard.tsx
+@@ -63,14 +63,14 @@ export function PluginCard({ plugin: p, copied, installedName, installedVersion,
+         // 已安装且有更新：醒目提示（有 release 比版本号、无 release 比仓库最近更新时间）
+         update ? h('span', { className: styles.updateBadge, title: t('updateAvailableHint') }, t('updateAvailable')) : null,
+         pendingUntil !== null
+-          ? h('span', { className: styles.updateBadge, title: t('updatePendingHint') }, t('updatePending', { time: clockTime(pendingUntil) }))
++          ? h('span', { className: styles.updateBadge, title: t('updatePendingHint') }, t('updatePending', { time: clockTime(pendingUntil, langKey) }))
+           : null,
+       ),
+       // 作者与分类同属背景信息：单独一行，不与名称抢宽度，也不参与是否要装/更新的判断
+       (author || p.category || p.compatibility?.status === 'verified')
+         ? h('div', { className: styles.cardBadgeRow },
+           author ? h('span', { className: styles.authorBadge, title: t('author') }, `@${author}`) : null,
+-          p.category ? h('span', { className: styles.categoryBadge }, categoryLabel(CATEGORY_LABELS, p.category, langKey)) : null,
++          p.category ? h('span', { className: styles.categoryBadge }, categoryLabel(CATEGORY_LABELS, p.category, langKey, t)) : null,
+           p.compatibility?.status === 'verified'
+             ? h('span', { className: styles.verified }, t('verified'))
+             : null,
+diff --git a/src/client/components/layout/CatalogHeader.tsx b/src/client/components/layout/CatalogHeader.tsx
+index 146efaa..f0ce39d 100644
+--- a/src/client/components/layout/CatalogHeader.tsx
++++ b/src/client/components/layout/CatalogHeader.tsx
+@@ -12,12 +12,13 @@ import { GITHUB_URL, PLUGIN_VERSION } from '../../logic/constants.ts'
+ import { siteUrl } from '../../logic/urls.ts'
+ import { GitHubIcon, LogoIcon } from '../ui/icons.tsx'
+ 
+-export function CatalogHeader({ t, langPath, statsTotal, statsVerified, onToggleLang, hubUpdate, onVersionClick, onAboutClick }: {
++export function CatalogHeader({ t, langPath, statsTotal, statsVerified, onToggleLang, nextLanguageLabel, hubUpdate, onVersionClick, onAboutClick }: {
+   t: Translate
+   langPath: string
+   statsTotal: number
+   statsVerified: number
+   onToggleLang: () => void
++  nextLanguageLabel: string | null
+   /** Hub 自身是否有可用更新：有则版本号后紧跟红色「可更新」徽标（整体一个可点入口） */
+   hubUpdate: boolean
+   /** 点击版本号（含红色徽标，同一入口）：无论有无更新都打开更新记录弹窗 */
+@@ -57,13 +58,13 @@ export function CatalogHeader({ t, langPath, statsTotal, statsVerified, onToggle
+         // 一起 space-between 顶到标题行最右
+         h('div', { className: styles.headerRight },
+           // 语言切换：按钮文字始终显示「要切到的语言」，点击即切，无需图标
+-          h('button', {
++          nextLanguageLabel !== null && h('button', {
+             className: styles.langBtn,
+             type: 'button',
+             onClick: onToggleLang,
+-            title: t('toggleLangHint'),
+-            'aria-label': t('toggleLangHint'),
+-          }, langPath === 'zh/' ? 'EN' : '中文'),
++            title: `${t('toggleLangHint')}: ${nextLanguageLabel}`,
++            'aria-label': `${t('toggleLangHint')}: ${nextLanguageLabel}`,
++          }, nextLanguageLabel),
+           // 「关注我们」：点击打开平台介绍 + 用户反馈群二维码弹窗
+           h('button', {
+             className: styles.aboutBtn,
+diff --git a/src/client/components/layout/CategoryTabs.tsx b/src/client/components/layout/CategoryTabs.tsx
+index 0efd47a..bcd33c4 100644
+--- a/src/client/components/layout/CategoryTabs.tsx
++++ b/src/client/components/layout/CategoryTabs.tsx
+@@ -8,15 +8,16 @@
+  */
+ import { createElement as h } from 'react'
+ import styles from '../../styles/Header.module.css'
+-import type { LocaleId } from '../../types.ts'
++import type { LocaleId, Translate } from '../../types.ts'
+ import { CATEGORY_ORDER, CATEGORY_SHORT_LABELS, categoryLabel } from '../../logic/constants.ts'
+ 
+-export function CategoryTabs({ category, setCategory, allLabel, totalCount, langKey }: {
++export function CategoryTabs({ category, setCategory, allLabel, totalCount, langKey, t }: {
+   category: string
+   setCategory: (value: string) => void
+   allLabel: string
+   totalCount: number
+   langKey: LocaleId
++  t: Translate
+ }) {
+   return h('div', { className: styles.tabs },
+     // 第一个按钮固定为「全部」：展示全部分类，直接显示插件总数；
+@@ -33,6 +34,6 @@ export function CategoryTabs({ category, setCategory, allLabel, totalCount, lang
+       className: category === id ? styles.tabActive : styles.tab,
+       onClick: () => setCategory(id),
+     },
+-    categoryLabel(CATEGORY_SHORT_LABELS, id, langKey))),
++    categoryLabel(CATEGORY_SHORT_LABELS, id, langKey, t, 'categoryShort'))),
+   )
+ }
+diff --git a/src/client/components/modals/AboutModal.tsx b/src/client/components/modals/AboutModal.tsx
+index 6d03074..b3c686d 100644
+--- a/src/client/components/modals/AboutModal.tsx
++++ b/src/client/components/modals/AboutModal.tsx
+@@ -14,6 +14,7 @@ import styles from '../../styles/Modal.module.css'
+ import type { HubAboutInfo } from '../../types.ts'
+ import type { LocaleId, Translate } from '../../types.ts'
+ import { renderMarkdown } from '../../logic/renderMarkdown.ts'
++import { dateLocaleOf, localizedText } from '../../logic/locale.ts'
+ import { CloseIcon } from '../ui/icons.tsx'
+ 
+ /**
+@@ -37,15 +38,7 @@ export function AboutModal({ info, lang, t, onClose }: {
+ }) {
+   // 内容：字符串直接使用；{zh,en} 对象按界面语言取，缺哪种补哪种，全缺则展示备用文案。
+   // Worker 未推送（info 为 null / content 为空）时弹窗仍能打开，显示「暂未发布」而非报错。
+-  const contentRaw = info
+-    ? typeof info.content === 'string'
+-      ? info.content
+-      : info.content && typeof info.content === 'object'
+-        ? lang === 'en'
+-          ? (info.content.en ?? info.content.zh ?? '')
+-          : (info.content.zh ?? info.content.en ?? '')
+-        : ''
+-    : ''
++  const contentRaw = localizedText(info?.content, lang)
+   // 每次打开弹窗（组件重新挂载）生成一个时间戳，用于二维码破缓存；
+   // 同一次打开内保持稳定，避免父组件重渲染导致图片被反复重载。
+   const qrTs = useMemo(() => Date.now(), [])
+@@ -55,7 +48,7 @@ export function AboutModal({ info, lang, t, onClose }: {
+   if (info?.updatedAt) {
+     const d = new Date(info.updatedAt)
+     if (!Number.isNaN(d.getTime())) {
+-      updated = d.toLocaleString(lang === 'en' ? 'en-US' : 'zh-CN')
++      updated = d.toLocaleString(dateLocaleOf(lang))
+     }
+   }
+ 
+diff --git a/src/client/components/modals/HubUpdateModal.tsx b/src/client/components/modals/HubUpdateModal.tsx
+index 4c7d00f..a53c81f 100644
+--- a/src/client/components/modals/HubUpdateModal.tsx
++++ b/src/client/components/modals/HubUpdateModal.tsx
+@@ -19,6 +19,7 @@ import styles from '../../styles/Modal.module.css'
+ import type { HubUpdateInfo, HubUpdateState } from '../../types.ts'
+ import type { LocaleId, Translate } from '../../types.ts'
+ import { renderMarkdown } from '../../logic/renderMarkdown.ts'
++import { dateLocaleOf, localizedText } from '../../logic/locale.ts'
+ import { CloseIcon } from '../ui/icons.tsx'
+ 
+ export function HubUpdateModal({ info, state, currentVersion, lang, t, onProceed, onClose }: {
+@@ -45,13 +46,7 @@ export function HubUpdateModal({ info, state, currentVersion, lang, t, onProceed
+       ? { className: styles.hubStatePending, label: t('hubVersionStatePending') }
+       : { className: styles.hubStateLatest, label: t('hubVersionStateLatest') }
+   // 变更记录：字符串直接使用；{zh,en} 对象按界面语言取，缺哪种补哪种，全缺则不出记录区
+-  const notesRaw = typeof info.notes === 'string'
+-    ? info.notes
+-    : info.notes && typeof info.notes === 'object'
+-      ? lang === 'en'
+-        ? (info.notes.en ?? info.notes.zh ?? '')
+-        : (info.notes.zh ?? info.notes.en ?? '')
+-      : ''
++  const notesRaw = localizedText(info.notes, lang)
+   // 记录开头的 H1 只是重复「DSH Plugin Hub vX」，版本已在顶部展示过；去掉后正文直接进入内容。
+   // 去掉后若没有正文（记录只有标题），保底仍显示原文，避免空盒子
+   const notesStripped = notesRaw.replace(/^\s*#\s*DSH Plugin Hub[^\n]*\n+/, '')
+@@ -64,7 +59,7 @@ export function HubUpdateModal({ info, state, currentVersion, lang, t, onProceed
+   if (info.publishedAt) {
+     const d = new Date(info.publishedAt)
+     if (!Number.isNaN(d.getTime())) {
+-      published = d.toLocaleString(lang === 'en' ? 'en-US' : 'zh-CN')
++      published = d.toLocaleString(dateLocaleOf(lang))
+     }
+   }
+ 
+diff --git a/src/client/components/modals/InstalledDetailModal.tsx b/src/client/components/modals/InstalledDetailModal.tsx
+index 8f468cf..f253e18 100644
+--- a/src/client/components/modals/InstalledDetailModal.tsx
++++ b/src/client/components/modals/InstalledDetailModal.tsx
+@@ -15,13 +15,14 @@ import type { InstalledItem } from '../../logic/installed.ts'
+ import { CATEGORY_LABELS, categoryLabel } from '../../logic/constants.ts'
+ import { pluginDetailUrl } from '../../logic/urls.ts'
+ import { clockTime, fmtStars } from '../../logic/format.ts'
++import { dateLocaleOf } from '../../logic/locale.ts'
+ import { CloseIcon, CopyIcon, FolderIcon, LinkIcon } from '../ui/icons.tsx'
+ 
+ /** ISO 安装时间 → 本地可读；非法值返回 null（行内不显示）。 */
+ function fmtDate(iso: string | null, lang: LocaleId): string | null {
+   if (!iso) return null
+   const d = new Date(iso)
+-  return Number.isNaN(d.getTime()) ? null : d.toLocaleString(lang === 'en' ? 'en-US' : 'zh-CN')
++  return Number.isNaN(d.getTime()) ? null : d.toLocaleString(dateLocaleOf(lang))
+ }
+ 
+ export function InstalledDetailModal({ item, t, lang, langPath, onClose, onUpdate, onUninstall, onCopyPath, onReveal }: {
+@@ -71,7 +72,7 @@ export function InstalledDetailModal({ item, t, lang, langPath, onClose, onUpdat
+               : t('updateAvailableHint'))
+           : item.pendingUntil != null
+             // 冷却期未到：给确切可重试时刻，而不是让「有更新」悄悄消失
+-            ? h('div', { className: styles.detailUpdateHint }, t('updatePending', { time: clockTime(item.pendingUntil) }))
++            ? h('div', { className: styles.detailUpdateHint }, t('updatePending', { time: clockTime(item.pendingUntil, lang) }))
+             : null,
+         // 详情信息网格：分类 / 状态 / 版本 / 收录入口 / 包名 / 统计 / 安装路径 / 安装时间 / 最后更新
+         h('div', { className: styles.detailGrid },
+@@ -79,7 +80,7 @@ export function InstalledDetailModal({ item, t, lang, langPath, onClose, onUpdat
+             ? h('div', { className: styles.detailRow },
+               h('span', { className: styles.detailLabel }, t('detailCategory')),
+               h('span', { className: styles.detailValue },
+-                categoryLabel(CATEGORY_LABELS, p.category, lang)))
++                categoryLabel(CATEGORY_LABELS, p.category, lang, t)))
+             : null,
+           h('div', { className: styles.detailRow },
+             h('span', { className: styles.detailLabel }, t('statusLabel')),
+diff --git a/src/client/components/modals/NotificationsModal.tsx b/src/client/components/modals/NotificationsModal.tsx
+index 05682e9..cdd41b9 100644
+--- a/src/client/components/modals/NotificationsModal.tsx
++++ b/src/client/components/modals/NotificationsModal.tsx
+@@ -12,7 +12,8 @@
+ import { createElement as h, useState } from 'react'
+ import type { MouseEvent } from 'react'
+ import styles from '../../styles/Modal.module.css'
+-import type { EnvInfo, Translate } from '../../types.ts'
++import type { EnvInfo, LocaleId, Translate } from '../../types.ts'
++import { dateLocaleOf } from '../../logic/locale.ts'
+ import type { NotificationRecord } from '../../logic/failures.ts'
+ import { actionOfRecord, classifyFailure, formatFailureMessage, missingRegistryPackageOf, npmTooLowVersion, pnpmPolicyHintOf, pnpmPolicyHintParams, registryMissingHintOf, unreachableTargetOf, registryHostOf, authRegistryHostOf, exclusiveProfileOf, desktopCliFallbackOf, dshTooOldInfoOf, unresolvedBundleOf, missingLocalDirOf } from '../../logic/failures.ts'
+ import type { PendingRestart, QueueTask } from '../../hooks/useTaskQueue.ts'
+@@ -20,11 +21,12 @@ import { pluginIssueUrl, pluginSiteUrl, hubIssueUrl } from '../../logic/urls.ts'
+ import { CloseIcon } from '../ui/icons.tsx'
+ import { ConfirmDialog } from './ConfirmDialog.tsx'
+ 
+-/** 记录时间完整展示：YYYY-MM-DD HH:mm:ss（每条通知都带精确到秒的时间戳）。 */
+-function fmtTime(at: number): string {
+-  const d = new Date(at)
+-  const pad = (n: number) => String(n).padStart(2, '0')
+-  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`
++/** Localized Gregorian timestamp, including seconds, independent of browser language. */
++function fmtTime(at: number, lang: LocaleId): string {
++  return new Date(at).toLocaleString(dateLocaleOf(lang), {
++    year: 'numeric', month: '2-digit', day: '2-digit',
++    hour: '2-digit', minute: '2-digit', second: '2-digit', hourCycle: 'h23',
++  })
+ }
+ 
+ /** 圆形状态徽标内的白色图形：成功为对勾、失败为叉。 */
+@@ -52,13 +54,14 @@ function BadgeGlyph({ ok }: { ok: boolean }) {
+     }))
+ }
+ 
+-export function NotificationsModal({ records, tasks, pendingRestarts, t, env, onClose, onCopy, onClear, onRemove, onUpdate, onIgnoreUpdate, cancelTask, restarting, onRestart, onRunDiagnostics, resolveRepo }: {
++export function NotificationsModal({ records, tasks, pendingRestarts, t, lang, env, onClose, onCopy, onClear, onRemove, onUpdate, onIgnoreUpdate, cancelTask, restarting, onRestart, onRunDiagnostics, resolveRepo }: {
+   records: NotificationRecord[]
+   /** 进行中的安装/卸载任务（实时进度，与队列弹窗同一数据源） */
+   tasks: QueueTask[]
+   /** 待重启插件：装完没重启的常驻提醒 */
+   pendingRestarts: PendingRestart[]
+   t: Translate
++  lang: LocaleId
+   env: EnvInfo | null
+   onClose: () => void
+   onCopy: (text: string) => void
+@@ -227,8 +230,8 @@ export function NotificationsModal({ records, tasks, pendingRestarts, t, env, on
+                     r.ok
+                       ? h('span', {
+                         className: styles.noticeTime,
+-                        title: new Date(r.at).toLocaleString(),
+-                      }, fmtTime(r.at))
++                        title: fmtTime(r.at, lang),
++                      }, fmtTime(r.at, lang))
+                       : null,
+                     // 更新提醒：行尾「去更新」按钮直达更新确认弹窗（整行也可点击）
+                     isUpdate
+@@ -606,8 +609,8 @@ export function NotificationsModal({ records, tasks, pendingRestarts, t, env, on
+                 ? h('div', { className: styles.noticeFoot },
+                   h('span', {
+                     className: styles.noticeTime,
+-                    title: new Date(r.at).toLocaleString(),
+-                  }, fmtTime(r.at)),
++                    title: fmtTime(r.at, lang),
++                  }, fmtTime(r.at, lang)),
+                 )
+                 : null,
+             )
+diff --git a/src/client/components/views/InstalledView.tsx b/src/client/components/views/InstalledView.tsx
+index a055f95..4a05db7 100644
+--- a/src/client/components/views/InstalledView.tsx
++++ b/src/client/components/views/InstalledView.tsx
+@@ -123,7 +123,7 @@ function InstalledRow({ item, t, langKey, canReveal, revealLabel, pendingRestart
+           ? h('span', { className: styles.updateBadge, title: t('updateAvailableHint') }, t('updateAvailable'))
+           : item.pendingUntil != null
+             // 冷却期未到：更新存在但还装不上，给确切时刻，避免看起来「已是最新」
+-            ? h('span', { className: styles.updateBadge, title: t('updatePendingHint') }, t('updatePending', { time: clockTime(item.pendingUntil) }))
++            ? h('span', { className: styles.updateBadge, title: t('updatePendingHint') }, t('updatePending', { time: clockTime(item.pendingUntil, langKey) }))
+             : null,
+       ),
+       // 右上角 Star / Fork：与插件市场列表同一规则，装之前看过的热度在已安装里也能对照。
+@@ -156,7 +156,7 @@ function InstalledRow({ item, t, langKey, canReveal, revealLabel, pendingRestart
+         }, item.repo)
+         : null,
+       category ? h('span', { className: styles.rowCategory },
+-        categoryLabel(CATEGORY_LABELS, category, langKey)) : null,
++        categoryLabel(CATEGORY_LABELS, category, langKey, t)) : null,
+       // 来源标签：目录插件 →「插件市场」（品牌色），命令行安装 →「手动安装」（琥珀色）
+       h('span', {
+         className: isCustom
+diff --git a/src/client/components/views/MarketView.tsx b/src/client/components/views/MarketView.tsx
+index 9250ae7..a711ae7 100644
+--- a/src/client/components/views/MarketView.tsx
++++ b/src/client/components/views/MarketView.tsx
+@@ -35,6 +35,7 @@ export function MarketView({ catalog, t, langPath, langKey, copied, resultText,
+       allLabel: t('all'),
+       totalCount: catalog.total,
+       langKey,
++      t,
+     }),
+     h(CatalogControls, {
+       query: catalog.query,
+diff --git a/src/client/data/catalog.ts b/src/client/data/catalog.ts
+index 5a62cda..166998b 100644
+--- a/src/client/data/catalog.ts
++++ b/src/client/data/catalog.ts
+@@ -8,12 +8,13 @@
+  */
+ import type { HubPlugin, LocaleId } from '../types.ts'
+ import { normalize } from '../logic/normalize.ts'
++import { catalogLocaleOf } from '../logic/locale.ts'
+ 
+ // 目录/统计数据经服务端 /catalog 代理路由获取（curl 子进程注入设置里的代理），
+ // 与 npm / git 安装通道同一代理规则 —— 浏览器不直连 api.dsh-plugin.org。
+ const PROXY_BASE = '/dsh-plugin-hub/catalog'
+ // refresh=1：跳过服务端 1 小时缓存直接回源（失败仍回退旧缓存），供「强制刷新」使用
+-const PLUGINS_URL = (lang: LocaleId, refresh: boolean) => `${PROXY_BASE}?lang=${lang}${refresh ? '&refresh=1' : ''}`
++const PLUGINS_URL = (lang: LocaleId, refresh: boolean) => `${PROXY_BASE}?lang=${catalogLocaleOf(lang)}${refresh ? '&refresh=1' : ''}`
+ const STATS_URL = (refresh: boolean) => `${PROXY_BASE}?stats=1${refresh ? '&refresh=1' : ''}`
+ 
+ async function fetchJson(url: string, signal?: AbortSignal): Promise<unknown> {
+diff --git a/src/client/hooks/useLanguage.ts b/src/client/hooks/useLanguage.ts
+index 985e98f..89345b2 100644
+--- a/src/client/hooks/useLanguage.ts
++++ b/src/client/hooks/useLanguage.ts
+@@ -3,40 +3,36 @@
+  * Website: https://dsh-plugin.org
+  * GitHub: https://github.com/dshplugin/dsh-plugin-hub
+  *
+- * 板块的语言状态：Hub 与宿主（系统）locale 共用 —— 头部语言开关通过 setLocale 写入
+- * 宿主语言偏好，让宿主界面（左侧菜单、设置弹窗）与 Hub 面板一起切换、不会各说各话。
+- * 对外暴露本地化字典查询 `t()`、zh/en 语言标记与 /zh/ URL 路径前缀。
++ * Hub UI follows the host locale without changing the user's preference on mount.
+  */
+-import { useEffect, useState } from 'react'
+-import type { LocaleId, SectionProps } from '../types.ts'
+-import { en, zh } from '../locales.ts'
++import { useEffect, useMemo, useState } from 'react'
++import type { SectionProps } from '../types.ts'
++import { LOCALE_NAMESPACE, nextLanguageOf, uiLocaleOf } from '../logic/locale.ts'
+ import { langPathOf } from '../logic/urls.ts'
+ 
+ export function useLanguage(locale: SectionProps['locale']) {
+-  // 界面语言 = 宿主（系统）语言：右上角按钮切换时直接写入宿主 locale 偏好，
+-  // 宿主左侧菜单/设置弹窗与 Hub 面板一起切换，不存在 Hub 内部语言与宿主语言脱节的情况。
+-  // subscribe 订阅宿主语言变化并触发重渲染，保证 Hub 界面随时跟随宿主。
+   const [, setRev] = useState(0)
+-  useEffect(() => locale.subscribe(() => setRev((r) => r + 1)), [locale])
+-  const lang: LocaleId = locale.getSnapshot().active
+-  const langKey: LocaleId = lang === 'en' ? 'en' : 'zh'
+-  // dsh-plugin.org 的 zh 页面挂在 /zh/ 前缀下，en 在根路径。
+-  const langPath = langPathOf(lang)
+-
+-  // 界面语言跟随宿主（系统）locale；宿主的 t() 绑定宿主 locale，
+-  // 这里基于本地字典自建翻译函数，与宿主 locale 保持一致。
+-  // （settings.section 的导航 label 仍在 apply 里用宿主 t()，跟随宿主语言。）
+-  const dict: Record<string, string> = langKey === 'en' ? en : zh
+-  const t = (key: string, params?: Record<string, string | number>): string => {
+-    const raw = dict[key] ?? key
+-    return params ? raw.replace(/\{(\w+)\}/g, (_, k) => String(params[k] ?? '')) : raw
+-  }
++  useEffect(() => {
++    const release = locale.subscribe(() => setRev(revision => revision + 1))
++    // Recheck once subscribed, including changes between render and the effect.
++    setRev(revision => revision + 1)
++    return release
++  }, [locale])
++  const snapshot = locale.getSnapshot()
++  const lang = uiLocaleOf(snapshot.active)
++  const nextLanguage = nextLanguageOf(snapshot)
++  const t = useMemo(() => locale.bind(LOCALE_NAMESPACE), [locale])
+ 
+   return {
+     lang,
+-    langKey,
+-    langPath,
++    langKey: lang,
++    langPath: langPathOf(lang),
+     t,
+-    toggleLang: () => locale.setLocale(lang === 'en' ? 'zh' : 'en'),
++    nextLanguageLabel: nextLanguage?.label ?? null,
++    toggleLang: () => {
++      // Re-read at click time: another plugin may have removed a language meanwhile.
++      const next = nextLanguageOf(locale.getSnapshot())
++      if (next) locale.setLocale(next.id)
++    },
+   }
+ }
+diff --git a/src/client/hooks/useTaskQueue.ts b/src/client/hooks/useTaskQueue.ts
+index df2c6e5..15d6803 100644
+--- a/src/client/hooks/useTaskQueue.ts
++++ b/src/client/hooks/useTaskQueue.ts
+@@ -12,6 +12,7 @@ import { useEffect, useRef, useState } from 'react'
+ import type { HubPlugin, InstallChannel, LocaleId, Translate } from '../types.ts'
+ import { executedCommandOf, installCommandOf, installTargetOf, repoFromInstallTarget } from '../logic/install-command.ts'
+ import type { InstalledItem } from '../logic/installed.ts'
++import { catalogLocaleOf } from '../logic/locale.ts'
+ 
+ /** 安装/卸载请求超时（ms）：服务端入队前要做目录包校验与网络探测（各自有超时，合计可达十几秒），
+  *  给足余量；超时主动中止，避免服务端网络挂起时前端永久卡「安装中 0%」。 */
+@@ -501,7 +502,7 @@ export function useTaskQueue(opts: TaskQueueOptions) {
+           // 锁定版本（Hub 自我更新）：服务端据此执行 `add <pkg>@<version>` 而不是 @latest
+           ...(input.pinVersion ? { version: input.pinVersion } : {}),
+           // 界面语言带给服务端：安装前网络探测等错误消息按用户当前语言返回（中文界面给中文，英文界面给英文）
+-          ...(langKey ? { lang: langKey } : {}),
++          ...(langKey ? { lang: catalogLocaleOf(langKey) } : {}),
+           // 安装入口渠道（只可能是 npm）：服务端日志/报错提示据此溯源
+           ...(input.channel ? { installChannel: input.channel } : {}),
+           ...(input.globalNpm && input.globalNpm.length > 0 ? { globalNpm: input.globalNpm } : {}),
+diff --git a/src/client/index.tsx b/src/client/index.tsx
+index a85ed68..4b9002b 100644
+--- a/src/client/index.tsx
++++ b/src/client/index.tsx
+@@ -9,6 +9,7 @@
+ import { createElement as h } from 'react'
+ import type { HubClientContext } from './types.ts'
+ import { en, zh } from './locales.ts'
++import { LOCALE_NAMESPACE } from './logic/locale.ts'
+ import { PluginHubSection } from './components/PluginHubSection.tsx'
+ import { MarketIcon } from './components/ui/icons.tsx'
+ import './styles/tokens.module.css'
+@@ -19,8 +20,8 @@ export const name = NS
+ export const inject = ['slots', 'locale']
+ 
+ export function apply(ctx: HubClientContext): void {
+-  ctx.effect(() => ctx.locale.register(NS, { zh, en }), `${NS}: dictionaries`)
+-  const t = ctx.locale.bind(NS)
++  ctx.effect(() => ctx.locale.register(LOCALE_NAMESPACE, { zh, en }), `${NS}: dictionaries`)
++  const t = ctx.locale.bind(LOCALE_NAMESPACE)
+   ctx.slots.inject('main', () => ctx.slots.register({
+     name: 'main',
+     key: NS,
+diff --git a/src/client/locales.ts b/src/client/locales.ts
+index 64f6607..0ed3004 100644
+--- a/src/client/locales.ts
++++ b/src/client/locales.ts
+@@ -6,6 +6,28 @@
+  * 插件中心设置板块的 zh/en 字典。
+  */
+ export const zh = {
++  'category.interface': '界面与体验',
++  'category.session': '会话与消息',
++  'category.memory': '记忆与上下文',
++  'category.tools': '工具与能力',
++  'category.agent': '技能与智能体',
++  'category.workflow': '工作流与自动化',
++  'category.integration': '集成与连接',
++  'category.model': '模型与推理',
++  'category.dev': '开发与运维',
++  'category.knowledge': '数据与知识',
++  'category.fun': '娱乐',
++  'categoryShort.interface': '界面体验',
++  'categoryShort.session': '会话消息',
++  'categoryShort.memory': '记忆上下文',
++  'categoryShort.tools': '工具能力',
++  'categoryShort.agent': '技能智能体',
++  'categoryShort.workflow': '工作流',
++  'categoryShort.integration': '集成连接',
++  'categoryShort.model': '模型推理',
++  'categoryShort.dev': '开发运维',
++  'categoryShort.knowledge': '数据知识',
++  'categoryShort.fun': '娱乐',
+   nav: '插件市场',
+   title: 'DSH Plugin Hub',
+   // 收录/精选数量由组件从官网 /api/stats.json 实时拉取填充（{total}/{verified}），不写死
+@@ -524,6 +546,28 @@ export const zh = {
+ }
+ 
+ export const en = {
++  'category.interface': 'UI & Experience',
++  'category.session': 'Sessions & Messages',
++  'category.memory': 'Memory & Context',
++  'category.tools': 'Tools & Capabilities',
++  'category.agent': 'Skills & Agents',
++  'category.workflow': 'Workflow & Automation',
++  'category.integration': 'Integrations & Connections',
++  'category.model': 'Models & Reasoning',
++  'category.dev': 'Development & Operations',
++  'category.knowledge': 'Data & Knowledge',
++  'category.fun': 'Entertainment',
++  'categoryShort.interface': 'UI Exp',
++  'categoryShort.session': 'Sessions',
++  'categoryShort.memory': 'Memory',
++  'categoryShort.tools': 'Tools',
++  'categoryShort.agent': 'Agents',
++  'categoryShort.workflow': 'Workflow',
++  'categoryShort.integration': 'Integrations',
++  'categoryShort.model': 'Models',
++  'categoryShort.dev': 'Dev',
++  'categoryShort.knowledge': 'Knowledge',
++  'categoryShort.fun': 'Fun',
+   nav: 'Plugin Hub',
+   title: 'DSH Plugin Hub',
+   // 收录/精选数量由组件从实时 /api/stats.json（{total}/{verified}）填充，不写死
+diff --git a/src/client/logic/constants.ts b/src/client/logic/constants.ts
+index 00cc51e..d79473b 100644
+--- a/src/client/logic/constants.ts
++++ b/src/client/logic/constants.ts
+@@ -5,7 +5,8 @@
+  *
+  * 常量：站点地址、分类元数据与排序 key。纯数据、无副作用、无网络，供所有使用方共享同一份定义。
+  */
+-import type { LocaleId } from '../types.ts'
++import type { CatalogLocaleId, LocaleId, Translate } from '../types.ts'
++import { catalogLocaleOf, LOCALE_NAMESPACE } from './locale.ts'
+ 
+ /** 插件市场官网地址。 */
+ export const SITE_URL = 'https://dsh-plugin.org/'
+@@ -43,16 +44,23 @@ export const CATEGORY_ORDER = [
+   'integration', 'model', 'dev', 'knowledge', 'fun',
+ ]
+ 
+-/** 分类标签按界面语言取词；未知 key 原样返回。 */
++/** Native locale owns category translations; absent language packs fall back to English. */
+ export function categoryLabel(
+-  map: Record<string, { zh: string; en: string }>,
++  map: Record<string, Record<CatalogLocaleId, string>>,
+   key: string,
+   lang: LocaleId,
++  t: Translate,
++  prefix: 'category' | 'categoryShort' = 'category',
+ ): string {
+-  return map[key]?.[lang] ?? key
++  const labels = Object.hasOwn(map, key) ? map[key] : undefined
++  if (!labels) return key
++  const translationKey = `${prefix}.${key}`
++  const translated = t(translationKey)
++  if (translated && translated !== translationKey && translated !== `${LOCALE_NAMESPACE}.${translationKey}`) return translated
++  return labels[catalogLocaleOf(lang)] ?? labels.en ?? key
+ }
+ 
+-export const CATEGORY_LABELS: Record<string, { zh: string; en: string }> = {
++export const CATEGORY_LABELS: Record<string, Record<CatalogLocaleId, string>> = {
+   interface: { zh: '界面与体验', en: 'UI & Experience' },
+   session: { zh: '会话与消息', en: 'Sessions & Messages' },
+   memory: { zh: '记忆与上下文', en: 'Memory & Context' },
+@@ -67,7 +75,7 @@ export const CATEGORY_LABELS: Record<string, { zh: string; en: string }> = {
+ }
+ 
+ /** 分类 Tab 的紧凑标签（英文模式空间受限时使用）。 */
+-export const CATEGORY_SHORT_LABELS: Record<string, { zh: string; en: string }> = {
++export const CATEGORY_SHORT_LABELS: Record<string, Record<CatalogLocaleId, string>> = {
+   interface: { zh: '界面体验', en: 'UI Exp' },
+   session: { zh: '会话消息', en: 'Sessions' },
+   memory: { zh: '记忆上下文', en: 'Memory' },
+diff --git a/src/client/logic/format.ts b/src/client/logic/format.ts
+index 1a9d117..086dc13 100644
+--- a/src/client/logic/format.ts
++++ b/src/client/logic/format.ts
+@@ -5,7 +5,8 @@
+  *
+  * 目录列表与卡片共用的展示格式化函数。
+  */
+-import type { Translate } from '../types.ts'
++import type { LocaleId, Translate } from '../types.ts'
++import { dateLocaleOf } from './locale.ts'
+ 
+ /** 星数/分支数的紧凑展示：<1k 原样；千级 1.2k；十万级取整。 */
+ export function fmtStars(count?: number): string {
+@@ -26,11 +27,12 @@ export function relTime(iso: string | undefined, t: Translate): string {
+ }
+ 
+ /** 具体时刻：当天只给「时:分」，跨天再补「月/日」，用于「暂缓到何时可更新」。 */
+-export function clockTime(ms: number): string {
++export function clockTime(ms: number, lang: LocaleId = 'en'): string {
+   const at = new Date(ms)
+   const now = new Date()
+   const hh = String(at.getHours()).padStart(2, '0')
+   const mm = String(at.getMinutes()).padStart(2, '0')
+   const sameDay = at.getFullYear() === now.getFullYear() && at.getMonth() === now.getMonth() && at.getDate() === now.getDate()
+-  return sameDay ? `${hh}:${mm}` : `${at.getMonth() + 1}/${at.getDate()} ${hh}:${mm}`
++  const date = at.toLocaleDateString(dateLocaleOf(lang), { month: 'numeric', day: 'numeric' })
++  return sameDay ? `${hh}:${mm}` : `${date} ${hh}:${mm}`
+ }
+diff --git a/src/client/styles/Header.module.css b/src/client/styles/Header.module.css
+index 43de72a..75ded42 100644
+--- a/src/client/styles/Header.module.css
++++ b/src/client/styles/Header.module.css
+@@ -108,6 +108,7 @@
+ /* 头部第一行：logo + 标题（官网链接）紧接着版本号入口，右侧控件组靠 auto 顶到最右 */
+ .headerTitleRow {
+   display: flex;
++  flex-wrap: wrap;
+   align-items: center;
+   gap: 8px;
+   min-width: 0;
+diff --git a/src/client/types.ts b/src/client/types.ts
+index cca7759..58dfd53 100644
+--- a/src/client/types.ts
++++ b/src/client/types.ts
+@@ -7,7 +7,8 @@
+  * 而不会连带拉入组件或样式。
+  */
+ 
+-export type LocaleId = 'zh' | 'en'
++export type LocaleId = 'zh' | 'en' | 'th'
++export type CatalogLocaleId = 'zh' | 'en'
+ 
+ /** 自定义安装入口渠道：仅 NPM 包。
+  *  客户端提交时显式上报，服务端落日志/报错提示据此溯源「从哪个入口发起」。 */
+@@ -18,9 +19,9 @@ export type Translate = (key: string, params?: Record<string, string | number>)
+ 
+ /** 本插件用到的 locale 服务子集。 */
+ export interface LocaleService {
+-  register(namespace: string, dicts: { zh: Record<string, string>; en: Record<string, string> }): unknown
+-  bind(namespace: string): (key: string, params?: Record<string, string | number>) => string
+-  getSnapshot(): { active: LocaleId }
++  register(namespace: string, dicts: Partial<Record<LocaleId, Record<string, string>>>): () => void
++  bind(namespace: string): Translate
++  getSnapshot(): { active: string; locales: readonly { id: string; label: string; fallback?: string }[]; revision: number }
+   subscribe(fn: () => void): () => void
+   /** 切换宿主（系统）语言偏好：Hub 语言跟随宿主，右上角语言按钮直接写入宿主偏好，
+    *  宿主左侧菜单/设置弹窗与 Hub 面板一起切换，与宿主语言保持一致 */
+
+--- /dev/null
++++ b/src/client/logic/locale.ts
+@@ -0,0 +1,41 @@
++import type { CatalogLocaleId, LocaleId, LocaleService } from '../types.ts'
++
++export const LOCALE_NAMESPACE = 'dsh-plugin'
++
++/** UI support is independent of the catalog's two-language API. */
++export function uiLocaleOf(active: string): LocaleId {
++  return active === 'th' || active === 'zh' ? active : 'en'
++}
++
++export function catalogLocaleOf(active: string): CatalogLocaleId {
++  return active === 'zh' ? 'zh' : 'en'
++}
++
++/** Keep Gregorian years consistent with the Hub's version/log timestamps. */
++export function dateLocaleOf(active: string): string {
++  return active === 'th' ? 'th-TH-u-ca-gregory' : active === 'zh' ? 'zh-CN' : 'en-US'
++}
++
++/** Only offer languages installed in the host; registering strings does not add a language. */
++export function nextLanguageOf(snapshot: ReturnType<LocaleService['getSnapshot']>): { id: LocaleId; label: string } | null {
++  const order: LocaleId[] = ['en', 'zh', 'th']
++  const available = order.flatMap(id => {
++    const language = snapshot.locales.find(language => language.id === id)
++    return language ? [{ id, label: language.label }] : []
++  })
++  const current = available.findIndex(language => language.id === snapshot.active)
++  const next = available[(current + 1) % available.length]
++  return next && next.id !== snapshot.active ? next : null
++}
++
++/** Remote editorial text stays unchanged; Thai prefers th, then en, then zh. */
++export function localizedText(value: string | Record<string, string> | null | undefined, active: string): string {
++  if (typeof value === 'string') return value
++  if (!value || typeof value !== 'object') return ''
++  const languages = active === 'th' ? ['th', 'en', 'zh'] : active === 'zh' ? ['zh', 'en'] : ['en', 'zh']
++  for (const language of languages) {
++    const text = value[language]
++    if (typeof text === 'string' && text.trim()) return text
++  }
++  return ''
++}

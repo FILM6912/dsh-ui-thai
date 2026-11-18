@@ -1,7 +1,7 @@
 {
   "dshVersion": "0.2.2-rc.3",
-  "namespaceCount": 67,
-  "keyCount": 3491,
+  "namespaceCount": 68,
+  "keyCount": 3965,
   "namespaces": {
     "account.notifications": 1,
     "actionCards": 14,
@@ -18,6 +18,7 @@
     "directory-browser": 13,
     "documentHtml": 4,
     "documentMarkdown": 4,
+    "dsh-plugin": 474,
     "entryCustomization": 7,
     "feedback": 20,
     "fileActions": 12,

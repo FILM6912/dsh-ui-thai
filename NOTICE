@@ -32,3 +32,13 @@ translations/codex.json and incorporated into generated client.js. These
 Codex-derived portions are distributed under Apache-2.0. The original
 provider implementation, OAuth code, and standalone CLI are not included.
 No endorsement by DeepSeek or the upstream plugin authors is implied.
+
+Plugin Hub dictionary and category material originates from dsh-plugin 2.3.9:
+https://github.com/dshplugin/dsh-plugin-hub
+Copyright (c) 2026 dshplugin, MIT License, retained in
+licenses/DSH-Plugin-Hub-MIT.txt.
+Its 452 UI strings and 22 full/short category labels were extracted into
+sources/hub-en.json, translated into translations/hub.json, and registered
+under the native dsh-plugin namespace in generated client.js. The upstream
+Hub's install backend is not included. A Hub version using the native locale
+translator is required; this package does not rewrite other plugins' files.

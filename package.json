@@ -1,6 +1,6 @@
 {
   "name": "dsh-ui-thai",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "publishConfig": { "access": "public", "registry": "https://registry.npmjs.org/" },
   "keywords": ["dsh-plugin", "deepseek-harness", "thai", "th", "i18n", "locale", "language-pack"],
   "type": "module",
@@ -10,7 +10,7 @@
   "homepage": "https://github.com/FILM6912/dsh-ui-thai#readme",
   "bugs": { "url": "https://github.com/FILM6912/dsh-ui-thai/issues" },
   "exports": { ".": "./index.js", "./client": "./client.js", "./locale/*.json": "./locale/*.json", "./icon": "./icon.svg" },
-  "files": ["index.js", "client.js", "cordis.patch.yml", "locale/*.json", "icon.svg", "README.md", "PUBLISHING.md", "LICENSE", "NOTICE", "licenses"],
+  "files": ["index.js", "client.js", "cordis.patch.yml", "locale/*.json", "icon.svg", "README.md", "PUBLISHING.md", "PLUGIN-HUB.md", "LICENSE", "NOTICE", "licenses", "compat"],
   "engines": { "dsh": "0.2.2-rc.3" },
   "scripts": {
     "build": "node tools/build.mjs",

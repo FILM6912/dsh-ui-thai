@@ -37,17 +37,22 @@ function harness(failAt = -1) {
 
 test('all frozen source namespaces, keys and placeholder multisets match', () => validate(sources(), translations()));
 test('generator is deterministic and checked-in artifact is current', () => {
-  assert.deepEqual(build(true), { namespaces: 67, keys: 3491 });
+  assert.deepEqual(build(true), { namespaces: 68, keys: 3965 });
   assert.equal(render(translations()), render(translations()));
 });
 test('factory is side-effect free and plugin registers, disposes and remounts', () => {
   const pack = plugin(); const ctx = harness();
   pack.apply(ctx);
-  assert.equal(ctx.languages.size, 1); assert.equal(ctx.dictionaries.size, 67);
+  assert.equal(ctx.languages.size, 1); assert.equal(ctx.dictionaries.size, 68);
   assert.equal(ctx.dictionaries.get('common').cancel, 'ยกเลิก');
   assert.equal(ctx.dictionaries.get('settings.locale')['language.title'], 'ภาษา');
+  const hub = ctx.dictionaries.get('dsh-plugin');
+  assert.equal(Object.keys(hub).length, 474);
+  assert.equal(hub.nav, 'ศูนย์ปลั๊กอิน');
+  assert.equal(hub['category.tools'], 'เครื่องมือและความสามารถ');
+  assert.equal(hub['categoryShort.tools'], 'เครื่องมือ');
   ctx.effects.pop()(); assert.equal(ctx.languages.size, 0); assert.equal(ctx.dictionaries.size, 0);
-  pack.apply(ctx); assert.equal(ctx.dictionaries.size, 67);
+  pack.apply(ctx); assert.equal(ctx.dictionaries.size, 68);
   const dispose = ctx.effects.pop(); dispose(); dispose();
   assert.equal(ctx.languages.size, 0); assert.equal(ctx.dictionaries.size, 0);
 });

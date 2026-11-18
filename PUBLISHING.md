@@ -43,7 +43,7 @@ npm run build
 npm test
 npm run check
 npm pack
-node tools/verify-package.mjs dsh-ui-thai-1.0.0.tgz
+node tools/verify-package.mjs dsh-ui-thai-1.1.0.tgz
 npm publish --dry-run --access public --registry=https://registry.npmjs.org
 ```
 

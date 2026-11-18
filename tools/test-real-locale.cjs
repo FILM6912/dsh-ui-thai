@@ -42,7 +42,7 @@ for (const file of fs.readdirSync('translations').filter(file => file.endsWith('
     }
   }
 }
-assert.equal(translatedKeys, 3491);
+assert.equal(translatedKeys, 3965);
 effects.pop()();
 assert(!locale.getLocale().locales.some(l => l.id === 'th'));
 assert.equal(locale.bind('common')('cancel'), 'Cancel');
@@ -51,4 +51,4 @@ locale.setLocale('th');
 assert.equal(locale.bind('settings.locale')('language.title'), 'ภาษา');
 effects.pop()();
 releaseEnglish();
-console.log('PASS real installed LocaleRuntime: all 3491 key lookups and interpolations across 67 namespaces, selection preserved, English fallback, disposal and remount. UI imports stubbed; real locale implementation unchanged.');
+console.log('PASS real installed LocaleRuntime: all 3965 key lookups and interpolations across 68 namespaces, selection preserved, English fallback, disposal and remount. UI imports stubbed; real locale implementation unchanged.');
