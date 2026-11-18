@@ -65,7 +65,7 @@ npm publish --access public --registry=https://registry.npmjs.org
 
 ```sh
 npm view dsh-ui-thai name version dist.integrity --registry=https://registry.npmjs.org
-dsh plugin --profile desktop add dsh-ui-thai
+dsh plugin --profile <your-profile> add dsh-ui-thai
 ```
 
 ใช้โปรไฟล์ทดสอบที่ไม่มีแพ็กเกจชื่อเดิม หรือถอน `@local/dsh-thai` ก่อน เลือก **Settings → General → Language → ไทย** แล้วตรวจผลจริง รายงานตามตรงหากการติดตั้งต้องเริ่มใหม่หรือมีข้อผิดพลาด

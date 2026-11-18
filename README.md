@@ -13,15 +13,15 @@
 ติดตั้งผ่าน npm registry ด้วยคำสั่งนี้ รองรับ DSH **0.2.2-rc.3**
 
 ```sh
-dsh plugin --profile desktop add dsh-ui-thai
+dsh plugin --profile <your-profile> add dsh-ui-thai
 ```
 
-เปลี่ยน `desktop` เป็นชื่อโปรไฟล์ที่คุณใช้ แล้วเลือก **Settings → General → Language → ไทย** หากระบบขอให้เริ่มใหม่ ให้ทำตามข้อความนั้น ขั้นตอนเผยแพร่สำหรับผู้ดูแลอยู่ใน [PUBLISHING.md](<PUBLISHING.md>)
+แทน `<your-profile>` ด้วยชื่อโปรไฟล์ที่คุณใช้ โดยไม่ใส่เครื่องหมาย `<` และ `>` แล้วเลือก **Settings → General → Language → ไทย** หากระบบขอให้เริ่มใหม่ ให้ทำตามข้อความนั้น ขั้นตอนเผยแพร่สำหรับผู้ดูแลอยู่ใน [PUBLISHING.md](<PUBLISHING.md>)
 
 อีกทางเลือกหนึ่งคือใช้ GitHub package spec แทนชื่อ npm
 
 ```sh
-dsh plugin --profile desktop add github:FILM6912/dsh-ui-thai
+dsh plugin --profile <your-profile> add github:FILM6912/dsh-ui-thai
 ```
 
 ตรวจสอบรูปแบบ CLI แล้ว แต่ยังไม่ได้ทดสอบการติดตั้งผ่าน GitHub package spec แบบครบวงจร วิธีติดตั้งจากโฟลเดอร์ด้านล่างเป็นทางเลือก
