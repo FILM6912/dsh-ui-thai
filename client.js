@@ -4,7 +4,7 @@
  * Other portions are MIT; see LICENSE.
  */
 window.__ModuleLoader__.load({
-  id: '@local/dsh-thai',
+  id: 'dsh-ui-thai',
   factory() {
     const dictionaries = {
   "account.notifications": {

@@ -1,4 +1,4 @@
 - insert:
     - id: local-dsh-thai
-      name: '@local/dsh-thai'
+      name: 'dsh-ui-thai'
       config: {}
