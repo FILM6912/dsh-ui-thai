@@ -1,0 +1,888 @@
+[
+  {
+    "package": "dsh-client-ui-account-notifications",
+    "namespaces": [
+      "account.notifications"
+    ],
+    "files": [
+      {
+        "path": "src/client/locales.ts",
+        "bytes": 776,
+        "englishExports": [
+          "en"
+        ],
+        "namespaceConstants": []
+      }
+    ]
+  },
+  {
+    "package": "dsh-client-ui-action-cards",
+    "namespaces": [],
+    "files": [
+      {
+        "path": "src/client/locales.ts",
+        "bytes": 5767,
+        "englishExports": [
+          "en"
+        ],
+        "namespaceConstants": []
+      }
+    ]
+  },
+  {
+    "package": "dsh-client-ui-agent-preset",
+    "namespaces": [
+      "settings.agentPreset",
+      "settings.agentPreset"
+    ],
+    "files": [
+      {
+        "path": "src/client/guide-locales.ts",
+        "bytes": 71637,
+        "englishExports": [
+          "guideEn"
+        ],
+        "namespaceConstants": []
+      },
+      {
+        "path": "src/client/locales.ts",
+        "bytes": 21853,
+        "englishExports": [],
+        "namespaceConstants": []
+      }
+    ]
+  },
+  {
+    "package": "dsh-client-ui-agent-team",
+    "namespaces": [],
+    "files": [
+      {
+        "path": "src/client/locales.ts",
+        "bytes": 16561,
+        "englishExports": [
+          "en"
+        ],
+        "namespaceConstants": [
+          {
+            "symbol": "NS",
+            "value": "agent-team"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "package": "dsh-client-ui-approval",
+    "namespaces": [],
+    "files": [
+      {
+        "path": "src/client/locales.ts",
+        "bytes": 3290,
+        "englishExports": [
+          "en"
+        ],
+        "namespaceConstants": []
+      }
+    ]
+  },
+  {
+    "package": "dsh-client-ui-chat",
+    "namespaces": [],
+    "files": [
+      {
+        "path": "src/client/locale.ts",
+        "bytes": 103381,
+        "englishExports": [
+          "en"
+        ],
+        "namespaceConstants": [
+          {
+            "symbol": "NS",
+            "value": "chat"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "package": "dsh-client-ui-commands",
+    "namespaces": [],
+    "files": [
+      {
+        "path": "src/client/locales.ts",
+        "bytes": 12366,
+        "englishExports": [
+          "en"
+        ],
+        "namespaceConstants": []
+      }
+    ]
+  },
+  {
+    "package": "dsh-client-ui-context-menu",
+    "namespaces": [
+      "contextMenu",
+      "contextMenu"
+    ],
+    "files": [
+      {
+        "path": "src/client/locales.ts",
+        "bytes": 916,
+        "englishExports": [],
+        "namespaceConstants": []
+      }
+    ]
+  },
+  {
+    "package": "dsh-client-ui-conversation",
+    "namespaces": [],
+    "files": [
+      {
+        "path": "src/client/locales.ts",
+        "bytes": 169310,
+        "englishExports": [
+          "en"
+        ],
+        "namespaceConstants": [
+          {
+            "symbol": "NS",
+            "value": "conversation"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "package": "dsh-client-ui-cordis",
+    "namespaces": [],
+    "files": [
+      {
+        "path": "src/client/locales.ts",
+        "bytes": 20480,
+        "englishExports": [
+          "en"
+        ],
+        "namespaceConstants": [
+          {
+            "symbol": "NS",
+            "value": "cordis"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "package": "dsh-client-ui-creation-recommendations",
+    "namespaces": [],
+    "files": [
+      {
+        "path": "src/client/locales.ts",
+        "bytes": 25816,
+        "englishExports": [
+          "en"
+        ],
+        "namespaceConstants": []
+      }
+    ]
+  },
+  {
+    "package": "dsh-client-ui-deliverables",
+    "namespaces": [],
+    "files": [
+      {
+        "path": "src/client/locales.ts",
+        "bytes": 28852,
+        "englishExports": [],
+        "namespaceConstants": [
+          {
+            "symbol": "NS",
+            "value": "deliverables"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "package": "dsh-client-ui-entry-customization",
+    "namespaces": [
+      "entryCustomization",
+      "entryCustomization"
+    ],
+    "files": [
+      {
+        "path": "src/client/locales.ts",
+        "bytes": 4706,
+        "englishExports": [
+          "en"
+        ],
+        "namespaceConstants": []
+      }
+    ]
+  },
+  {
+    "package": "dsh-client-ui-file-actions",
+    "namespaces": [
+      "fileActions",
+      "fileActions"
+    ],
+    "files": [
+      {
+        "path": "src/client/locales.ts",
+        "bytes": 6277,
+        "englishExports": [
+          "en"
+        ],
+        "namespaceConstants": []
+      }
+    ]
+  },
+  {
+    "package": "dsh-client-ui-file-drag",
+    "namespaces": [
+      "fileDrag",
+      "fileDrag"
+    ],
+    "files": [
+      {
+        "path": "src/client/locales.ts",
+        "bytes": 1555,
+        "englishExports": [
+          "en"
+        ],
+        "namespaceConstants": []
+      }
+    ]
+  },
+  {
+    "package": "dsh-client-ui-goal",
+    "namespaces": [],
+    "files": [
+      {
+        "path": "src/client/locales.ts",
+        "bytes": 4990,
+        "englishExports": [
+          "en"
+        ],
+        "namespaceConstants": []
+      }
+    ]
+  },
+  {
+    "package": "dsh-client-ui-input-trigger",
+    "namespaces": [],
+    "files": [
+      {
+        "path": "src/client/locales.ts",
+        "bytes": 3776,
+        "englishExports": [
+          "en"
+        ],
+        "namespaceConstants": []
+      }
+    ]
+  },
+  {
+    "package": "dsh-client-ui-jobs",
+    "namespaces": [],
+    "files": [
+      {
+        "path": "src/client/locales.ts",
+        "bytes": 14762,
+        "englishExports": [],
+        "namespaceConstants": [
+          {
+            "symbol": "NS",
+            "value": "job"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "package": "dsh-client-ui-layout",
+    "namespaces": [
+      "shortcuts.layout",
+      "shortcuts.layout"
+    ],
+    "files": [
+      {
+        "path": "src/client/shortcut-locales.ts",
+        "bytes": 1267,
+        "englishExports": [],
+        "namespaceConstants": []
+      }
+    ]
+  },
+  {
+    "package": "dsh-client-ui-message-feedback",
+    "namespaces": [],
+    "files": [
+      {
+        "path": "src/client/locales.ts",
+        "bytes": 11495,
+        "englishExports": [
+          "en"
+        ],
+        "namespaceConstants": []
+      }
+    ]
+  },
+  {
+    "package": "dsh-client-ui-model-selection",
+    "namespaces": [],
+    "files": [
+      {
+        "path": "src/client/locales.ts",
+        "bytes": 12667,
+        "englishExports": [
+          "en"
+        ],
+        "namespaceConstants": []
+      }
+    ]
+  },
+  {
+    "package": "dsh-client-ui-open-in-app",
+    "namespaces": [],
+    "files": [
+      {
+        "path": "src/client/locales.ts",
+        "bytes": 14696,
+        "englishExports": [],
+        "namespaceConstants": [
+          {
+            "symbol": "NS",
+            "value": "open-in-app"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "package": "dsh-client-ui-permission-presets",
+    "namespaces": [
+      "settings.permission"
+    ],
+    "files": [
+      {
+        "path": "src/client/locales.ts",
+        "bytes": 21559,
+        "englishExports": [
+          "en",
+          "accessEn"
+        ],
+        "namespaceConstants": [
+          {
+            "symbol": "PERMISSION_ACCESS_NS",
+            "value": "permission.access"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "package": "dsh-client-ui-plan",
+    "namespaces": [],
+    "files": [
+      {
+        "path": "src/client/locales.ts",
+        "bytes": 8615,
+        "englishExports": [
+          "en"
+        ],
+        "namespaceConstants": []
+      }
+    ]
+  },
+  {
+    "package": "dsh-client-ui-plugin-manager",
+    "namespaces": [],
+    "files": [
+      {
+        "path": "src/client/locales.ts",
+        "bytes": 173664,
+        "englishExports": [
+          "en"
+        ],
+        "namespaceConstants": [
+          {
+            "symbol": "INSTALL_GIT_EXAMPLE",
+            "value": "https://github.com/author/dsh-plugin"
+          },
+          {
+            "symbol": "INSTALL_PATH_EXAMPLE",
+            "value": "/Users/name/my-plugin"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "package": "dsh-client-ui-plugin-market",
+    "namespaces": [],
+    "files": [
+      {
+        "path": "src/client/locales.ts",
+        "bytes": 38409,
+        "englishExports": [
+          "en"
+        ],
+        "namespaceConstants": []
+      }
+    ]
+  },
+  {
+    "package": "dsh-client-ui-plugin-recommendations",
+    "namespaces": [],
+    "files": [
+      {
+        "path": "src/client/locales.ts",
+        "bytes": 14119,
+        "englishExports": [
+          "en"
+        ],
+        "namespaceConstants": []
+      }
+    ]
+  },
+  {
+    "package": "dsh-client-ui-reference",
+    "namespaces": [],
+    "files": [
+      {
+        "path": "src/client/locales.ts",
+        "bytes": 6347,
+        "englishExports": [
+          "en"
+        ],
+        "namespaceConstants": [
+          {
+            "symbol": "NS",
+            "value": "reference"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "package": "dsh-client-ui-schedule",
+    "namespaces": [],
+    "files": [
+      {
+        "path": "src/client/frequency-locales.ts",
+        "bytes": 24261,
+        "englishExports": [
+          "frequencyZh",
+          "frequencyJa",
+          "frequencyEs",
+          "frequencyFr",
+          "frequencyDe",
+          "frequencyRu",
+          "frequencyPt"
+        ],
+        "namespaceConstants": []
+      },
+      {
+        "path": "src/client/locales.ts",
+        "bytes": 7811,
+        "englishExports": [],
+        "namespaceConstants": [
+          {
+            "symbol": "NS",
+            "value": "schedule.catalog"
+          }
+        ]
+      },
+      {
+        "path": "src/client/task-manager-locales.ts",
+        "bytes": 75438,
+        "englishExports": [
+          "en"
+        ],
+        "namespaceConstants": []
+      }
+    ]
+  },
+  {
+    "package": "dsh-client-ui-secret-mask",
+    "namespaces": [],
+    "files": [
+      {
+        "path": "src/client/locales.ts",
+        "bytes": 2141,
+        "englishExports": [
+          "en"
+        ],
+        "namespaceConstants": [
+          {
+            "symbol": "NS",
+            "value": "secretMask"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "package": "dsh-client-ui-settings-account",
+    "namespaces": [
+      "settings.account",
+      "settings.account"
+    ],
+    "files": [
+      {
+        "path": "src/client/locales.ts",
+        "bytes": 26631,
+        "englishExports": [
+          "en"
+        ],
+        "namespaceConstants": []
+      }
+    ]
+  },
+  {
+    "package": "dsh-client-ui-settings-agent-loop",
+    "namespaces": [],
+    "files": [
+      {
+        "path": "src/client/locales.ts",
+        "bytes": 8085,
+        "englishExports": [],
+        "namespaceConstants": []
+      }
+    ]
+  },
+  {
+    "package": "dsh-client-ui-settings-general",
+    "namespaces": [],
+    "files": [
+      {
+        "path": "src/client/locales.ts",
+        "bytes": 45648,
+        "englishExports": [
+          "en"
+        ],
+        "namespaceConstants": []
+      }
+    ]
+  },
+  {
+    "package": "dsh-client-ui-settings-models",
+    "namespaces": [],
+    "files": [
+      {
+        "path": "src/client/locales.ts",
+        "bytes": 98283,
+        "englishExports": [
+          "en"
+        ],
+        "namespaceConstants": []
+      }
+    ]
+  },
+  {
+    "package": "dsh-client-ui-settings-plugin-inventory",
+    "namespaces": [
+      "settings.agentPreset"
+    ],
+    "files": [
+      {
+        "path": "src/client/locales.ts",
+        "bytes": 14954,
+        "englishExports": [
+          "en"
+        ],
+        "namespaceConstants": []
+      }
+    ]
+  },
+  {
+    "package": "dsh-client-ui-settings-plugins",
+    "namespaces": [],
+    "files": [
+      {
+        "path": "src/client/locales.ts",
+        "bytes": 3132,
+        "englishExports": [],
+        "namespaceConstants": []
+      }
+    ]
+  },
+  {
+    "package": "dsh-client-ui-settings-session-log",
+    "namespaces": [],
+    "files": [
+      {
+        "path": "src/client/locales.ts",
+        "bytes": 2886,
+        "englishExports": [
+          "en"
+        ],
+        "namespaceConstants": []
+      }
+    ]
+  },
+  {
+    "package": "dsh-client-ui-settings-shell",
+    "namespaces": [],
+    "files": [
+      {
+        "path": "src/client/locales.ts",
+        "bytes": 9349,
+        "englishExports": [],
+        "namespaceConstants": []
+      }
+    ]
+  },
+  {
+    "package": "dsh-client-ui-settings-subagent",
+    "namespaces": [],
+    "files": [
+      {
+        "path": "src/client/locales.ts",
+        "bytes": 27032,
+        "englishExports": [],
+        "namespaceConstants": []
+      }
+    ]
+  },
+  {
+    "package": "dsh-client-ui-settings-web-search",
+    "namespaces": [],
+    "files": [
+      {
+        "path": "src/client/locales.ts",
+        "bytes": 25077,
+        "englishExports": [],
+        "namespaceConstants": []
+      }
+    ]
+  },
+  {
+    "package": "dsh-client-ui-shortcuts",
+    "namespaces": [
+      "shortcuts",
+      "shortcuts"
+    ],
+    "files": [
+      {
+        "path": "src/client/locales.ts",
+        "bytes": 34801,
+        "englishExports": [],
+        "namespaceConstants": []
+      }
+    ]
+  },
+  {
+    "package": "dsh-client-ui-sidebar",
+    "namespaces": [],
+    "files": [
+      {
+        "path": "src/client/locales.ts",
+        "bytes": 4733,
+        "englishExports": [
+          "en"
+        ],
+        "namespaceConstants": []
+      }
+    ]
+  },
+  {
+    "package": "dsh-client-ui-sidebar-browser",
+    "namespaces": [],
+    "files": [
+      {
+        "path": "src/client/locales.ts",
+        "bytes": 14595,
+        "englishExports": [
+          "en"
+        ],
+        "namespaceConstants": []
+      }
+    ]
+  },
+  {
+    "package": "dsh-client-ui-sidebar-documentpreview",
+    "namespaces": [],
+    "files": [
+      {
+        "path": "src/client/locales.ts",
+        "bytes": 11583,
+        "englishExports": [
+          "en"
+        ],
+        "namespaceConstants": []
+      }
+    ]
+  },
+  {
+    "package": "dsh-client-ui-sidebar-files",
+    "namespaces": [],
+    "files": [
+      {
+        "path": "src/client/locales.ts",
+        "bytes": 32922,
+        "englishExports": [
+          "en"
+        ],
+        "namespaceConstants": []
+      }
+    ]
+  },
+  {
+    "package": "dsh-client-ui-sidebar-right",
+    "namespaces": [],
+    "files": [
+      {
+        "path": "src/client/locales.ts",
+        "bytes": 18049,
+        "englishExports": [
+          "en"
+        ],
+        "namespaceConstants": []
+      }
+    ]
+  },
+  {
+    "package": "dsh-client-ui-sidebar-terminal",
+    "namespaces": [],
+    "files": [
+      {
+        "path": "src/client/locales.ts",
+        "bytes": 17510,
+        "englishExports": [
+          "en"
+        ],
+        "namespaceConstants": []
+      }
+    ]
+  },
+  {
+    "package": "dsh-client-ui-skill",
+    "namespaces": [],
+    "files": [
+      {
+        "path": "src/client/locales.ts",
+        "bytes": 4038,
+        "englishExports": [
+          "en"
+        ],
+        "namespaceConstants": [
+          {
+            "symbol": "NS",
+            "value": "skill"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "package": "dsh-client-ui-subagent",
+    "namespaces": [],
+    "files": [
+      {
+        "path": "src/client/locales.ts",
+        "bytes": 20008,
+        "englishExports": [],
+        "namespaceConstants": [
+          {
+            "symbol": "NS",
+            "value": "subagent"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "package": "dsh-client-ui-theme",
+    "namespaces": [],
+    "files": [
+      {
+        "path": "src/client/locales.ts",
+        "bytes": 15301,
+        "englishExports": [
+          "en"
+        ],
+        "namespaceConstants": []
+      }
+    ]
+  },
+  {
+    "package": "dsh-client-ui-tool",
+    "namespaces": [],
+    "files": [
+      {
+        "path": "src/client/locale.ts",
+        "bytes": 124,
+        "englishExports": [],
+        "namespaceConstants": [
+          {
+            "symbol": "CONVERSATION_NS",
+            "value": "conversation"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "package": "dsh-client-ui-trajectory",
+    "namespaces": [],
+    "files": [
+      {
+        "path": "src/client/locales.ts",
+        "bytes": 75183,
+        "englishExports": [],
+        "namespaceConstants": [
+          {
+            "symbol": "NS",
+            "value": "trajectory"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "package": "dsh-client-ui-user-questions",
+    "namespaces": [],
+    "files": [
+      {
+        "path": "src/client/locales.ts",
+        "bytes": 13809,
+        "englishExports": [
+          "en"
+        ],
+        "namespaceConstants": []
+      }
+    ]
+  },
+  {
+    "package": "dsh-client-ui-workflow-run",
+    "namespaces": [],
+    "files": [
+      {
+        "path": "src/client/locales.ts",
+        "bytes": 7072,
+        "englishExports": [],
+        "namespaceConstants": [
+          {
+            "symbol": "NS",
+            "value": "workflowRun"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "package": "dsh-client-ui-workspace",
+    "namespaces": [],
+    "files": [
+      {
+        "path": "src/client/locales.ts",
+        "bytes": 56449,
+        "englishExports": [
+          "en"
+        ],
+        "namespaceConstants": []
+      }
+    ]
+  }
+]

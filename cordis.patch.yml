@@ -1,0 +1,4 @@
+- insert:
+    - id: local-dsh-thai
+      name: '@local/dsh-thai'
+      config: {}

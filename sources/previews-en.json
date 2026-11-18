@@ -1,0 +1,168 @@
+{
+  "dictionaries": {
+    "sidebarCodePreview": {
+      "title": "Code",
+      "copy": "Copy",
+      "copied": "Copied"
+    },
+    "sidebarExcel": {
+      "title": "Spreadsheet",
+      "language": "en",
+      "loading": "Rendering document...",
+      "invalid": "This spreadsheet could not be opened. Check its format, contents, or password protection.",
+      "tooLarge": "This workbook exceeds the preview size limit.",
+      "timeout": "Opening this workbook timed out. Try a smaller file.",
+      "encoding": "This text encoding could not be read. Save the file as UTF-8 or UTF-16 with a BOM and retry.",
+      "formulaWarning": "This workbook contains formulas. Displayed results may be missing or inaccurate.",
+      "unsupportedNotice": "This preview does not support {features} in this workbook. Open it in a system application for the full experience.",
+      "charts": "charts",
+      "images": "images",
+      "shapes": "shapes",
+      "conditionalFormatting": "conditional formatting",
+      "featureSeparator": ", ",
+      "retry": "Retry"
+    },
+    "documentHtml": {
+      "title": "HTML",
+      "frame": "HTML document preview",
+      "loading": "Rendering document...",
+      "failed": "This HTML document could not be previewed."
+    },
+    "sidebarImage": {
+      "zoomControls": "Zoom controls",
+      "zoomMenu": "Choose zoom",
+      "zoomOut": "Zoom out",
+      "zoomIn": "Zoom in",
+      "zoomFitWidth": "Fit width",
+      "zoomValue": "{percent}%",
+      "title": "Image",
+      "preview": "Image preview: {name}",
+      "loading": "Rendering document...",
+      "failed": "This image could not be displayed.",
+      "unsupported": "Image preview requires the complete file contents."
+    },
+    "documentMarkdown": {
+      "viewer.label": "Markdown",
+      "code.copy": "Copy",
+      "code.copied": "Copied",
+      "footnotes": "Footnotes"
+    },
+    "sidebarOffice": {
+      "title": "Office document",
+      "loading": "Rendering document...",
+      "retry": "Retry",
+      "viewMissingFonts": "Missing fonts: {count}. Click to view.",
+      "missingFontsTitle": "Missing fonts",
+      "missingFontsDescription": "These fonts are unavailable for this preview. Text and layout may differ from the original document.",
+      "missingFontsCount": "Fonts: {count}",
+      "closeDetails": "Close font details",
+      "unavailable": "Office previews are unavailable. Enable the document preview service on the computer running DeepSeek Harness.",
+      "invalid": "This Office file cannot be previewed. It may be damaged, password protected, or have the wrong extension.",
+      "tooLarge": "The Office file or converted PDF exceeds the preview size limit. Reduce the file size or adjust the preview configuration.",
+      "failed": "Office conversion did not produce a usable PDF. Check the file and try again.",
+      "timeout": "Office conversion timed out. Try again.",
+      "busy": "Office preview is busy. Try again shortly.",
+      "changed": "The file changed while being read. Reopen the preview."
+    },
+    "sidebarPdf": {
+      "zoomControls": "Zoom controls",
+      "zoomMenu": "Choose zoom",
+      "zoomOut": "Zoom out",
+      "zoomIn": "Zoom in",
+      "zoomFitWidth": "Fit width",
+      "zoomValue": "{percent}%",
+      "title": "PDF",
+      "pageImage": "PDF page {page}",
+      "loading": "Rendering document...",
+      "rendering": "Rendering page…",
+      "failed": "Cannot display PDF: {message}",
+      "password": "This PDF requires a password; password-protected previews are not supported.",
+      "workerFailed": "The PDF rendering process could not continue. Please retry.",
+      "unsupported": "PDF preview requires the complete file contents.",
+      "retry": "Retry"
+    },
+    "directory-browser": {
+      "browser.title": "Select Workspace Directory",
+      "browser.home": "Home",
+      "browser.newFolder": "New folder",
+      "browser.folderName": "Folder name",
+      "browser.createIn": "New folder in \"{name}\"",
+      "browser.untitledFolder": "Untitled folder",
+      "browser.create": "Create",
+      "browser.cancel": "Cancel",
+      "browser.open": "Open",
+      "browser.editPath": "Edit path",
+      "browser.loading": "Loading…",
+      "browser.truncated": "Too many folders to list; only the beginning is shown.",
+      "browser.showHidden": "Show hidden files"
+    }
+  },
+  "provenance": {
+    "sidebarCodePreview": [
+      {
+        "path": "src/client/code/locales.ts",
+        "sha256": "c07b36c54174570fdc8e31c781b52a3ddee3d6cf9a6fd3d76c588650350ae6aa",
+        "package": "@deepseek-ai/dsh-client-ui-sidebar-documentpreview"
+      }
+    ],
+    "sidebarExcel": [
+      {
+        "path": "src/client/excel/locales.ts",
+        "sha256": "af31e889d0e251dd1513897071adb8862abbcca97022149ae03f36b985c107c4",
+        "package": "@deepseek-ai/dsh-client-ui-sidebar-documentpreview"
+      }
+    ],
+    "documentHtml": [
+      {
+        "path": "src/client/html/locales.ts",
+        "sha256": "3575709134a8dd0af1c92d1d481873d50ab58d9a53387cdb9c52eb4be2d74ba2",
+        "package": "@deepseek-ai/dsh-client-ui-sidebar-documentpreview"
+      }
+    ],
+    "sidebarImage": [
+      {
+        "path": "src/client/image/locales.ts",
+        "sha256": "1cf60b8a0b397ee77ba4ba1902fe0e156185b9dcec9403aba3851097cccc18e5",
+        "package": "@deepseek-ai/dsh-client-ui-sidebar-documentpreview"
+      },
+      {
+        "path": "src/client/zoom/locales.ts",
+        "sha256": "62c2cc7b3582e2ee6cfe435b10bfaa7cf90379570ccfcda8a64baa44170dd7d1",
+        "package": "@deepseek-ai/dsh-client-ui-sidebar-documentpreview"
+      }
+    ],
+    "documentMarkdown": [
+      {
+        "path": "src/client/markdown/locales.ts",
+        "sha256": "9a96d738c650ffc260fca914a16073a9131e4c1c1f5d95514fb9cbe9e245e208",
+        "package": "@deepseek-ai/dsh-client-ui-sidebar-documentpreview"
+      }
+    ],
+    "sidebarOffice": [
+      {
+        "path": "src/client/office/locales.ts",
+        "sha256": "99b028f8ca4fa6a7b961ab27c0210a3de8aaf783f6f9e4d26ea2ca2659921ded",
+        "package": "@deepseek-ai/dsh-client-ui-sidebar-documentpreview"
+      }
+    ],
+    "sidebarPdf": [
+      {
+        "path": "src/client/pdf/locales.ts",
+        "sha256": "9b6993e4ab11dcd4ae0010d72fbd0133a3d6a06ca07aad48d063db5e1f039e01",
+        "package": "@deepseek-ai/dsh-client-ui-sidebar-documentpreview"
+      },
+      {
+        "path": "src/client/zoom/locales.ts",
+        "sha256": "62c2cc7b3582e2ee6cfe435b10bfaa7cf90379570ccfcda8a64baa44170dd7d1",
+        "package": "@deepseek-ai/dsh-client-ui-sidebar-documentpreview"
+      }
+    ],
+    "directory-browser": [
+      {
+        "path": "src/client/index.ts",
+        "sha256": "3f9379959c8dd1bd500ef85cc1a953ef47739d0d2ff9a40ed00e22e18e11a2b8",
+        "package": "@deepseek-ai/dsh-client-ui-directory-picker-browse"
+      }
+    ]
+  }
+}

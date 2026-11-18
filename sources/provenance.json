@@ -1,0 +1,411 @@
+{
+  "version": "0.2.2-rc.3",
+  "sources": {
+    "common": [
+      {
+        "package": "dsh-client-locale",
+        "path": "src/locales/en.ts",
+        "sha256": "8a8c556971f2cf336cd1efe36c3fae13971bc0e328fb52b04d6c3ae255dde2e8"
+      }
+    ],
+    "settings.locale": [
+      {
+        "package": "dsh-client-locale",
+        "path": "src/locales/settings.ts",
+        "sha256": "6c2cc59e177a796f851a286009c5462332c7dc88187cbc999bb2abea29025359"
+      }
+    ],
+    "account.notifications": [
+      {
+        "package": "dsh-client-ui-account-notifications",
+        "path": "src/client/locales.ts",
+        "sha256": "a8a7d724f6df80fd5397d7a7dbc78fe8aac06189c475f936b0972cf76e82fe2e"
+      }
+    ],
+    "actionCards": [
+      {
+        "package": "dsh-client-ui-action-cards",
+        "path": "src/client/locales.ts",
+        "sha256": "ce5e999f75941c63bc19f1ae225eec1c631fd15d09bca604fe60d6c386b590ec"
+      }
+    ],
+    "settings.agentPreset": [
+      {
+        "package": "dsh-client-ui-agent-preset",
+        "path": "src/client/locales.ts",
+        "sha256": "45fe6f4fe7b2eeaff550f80a262a8760224651181aa008fea325ee51bae41da3"
+      }
+    ],
+    "agent-team": [
+      {
+        "package": "dsh-client-ui-agent-team",
+        "path": "src/client/locales.ts",
+        "sha256": "03388aaa72b5aabca8ba26d647bed5efb83185aecf6f4ac1eb551fc4e7ede4ed"
+      }
+    ],
+    "approval": [
+      {
+        "package": "dsh-client-ui-approval",
+        "path": "src/client/locales.ts",
+        "sha256": "2418e63457cf23628b8601b0fe9622953a3de49bd98dd6d71cff96547bf4952e"
+      }
+    ],
+    "chat": [
+      {
+        "package": "dsh-client-ui-chat",
+        "path": "src/client/locale.ts",
+        "sha256": "20b1e10b02685044a8232d2c9a9c2ba3f98351818bfc902997e03dd0fd8fab28"
+      }
+    ],
+    "command": [
+      {
+        "package": "dsh-client-ui-commands",
+        "path": "src/client/locales.ts",
+        "sha256": "20b277f2635b568e4cd34157de4c7485c7ec678a8c8719c151cfa15f5b209321"
+      }
+    ],
+    "contextMenu": [
+      {
+        "package": "dsh-client-ui-context-menu",
+        "path": "src/client/locales.ts",
+        "sha256": "32dc4d6eb44e5a7a08f08d43183103ad2f5f617d1f7698e846ac79e059817b97"
+      }
+    ],
+    "conversation": [
+      {
+        "package": "dsh-client-ui-conversation",
+        "path": "src/client/locales.ts",
+        "sha256": "0ebd75379bb275be2a213d6ff7e335d0d5dcc0af6f172dea7794349581d92b31"
+      }
+    ],
+    "cordis": [
+      {
+        "package": "dsh-client-ui-cordis",
+        "path": "src/client/locales.ts",
+        "sha256": "06d801106f40e184a11e2e3d079c9b12493b21f4b9d4655108cc650c0c6c08a1"
+      }
+    ],
+    "creationRecommendations": [
+      {
+        "package": "dsh-client-ui-creation-recommendations",
+        "path": "src/client/locales.ts",
+        "sha256": "5299bc1d38a01f3e57d3e1bde7c2ed070a10ace33bf60a6ff010bfe920aafd75"
+      }
+    ],
+    "deliverables": [
+      {
+        "package": "dsh-client-ui-deliverables",
+        "path": "src/client/locales.ts",
+        "sha256": "d309e9ef9dd285ea70216369409af59717f6144bb8ff130cc3f0763b9069d273"
+      }
+    ],
+    "entryCustomization": [
+      {
+        "package": "dsh-client-ui-entry-customization",
+        "path": "src/client/locales.ts",
+        "sha256": "dbc88dba9efc5d261b441cf778d94efc63a26c1727d5fd4a42028380c19f96f7"
+      }
+    ],
+    "fileActions": [
+      {
+        "package": "dsh-client-ui-file-actions",
+        "path": "src/client/locales.ts",
+        "sha256": "05ecb65a72c97ae12016b6301ce91d9bdf6f2143a56b288e2439c8148d801584"
+      }
+    ],
+    "fileDrag": [
+      {
+        "package": "dsh-client-ui-file-drag",
+        "path": "src/client/locales.ts",
+        "sha256": "b0a48a82de7b1dbdfb5ef23d7ca41883a3aa063d36c55136ddeb18d0fe4cfc24"
+      }
+    ],
+    "goal": [
+      {
+        "package": "dsh-client-ui-goal",
+        "path": "src/client/locales.ts",
+        "sha256": "bce69622844d0aa0b1aa5ff75839462a5b80be0d6f2e7bb50bd71a47c3888edd"
+      }
+    ],
+    "slash.menu": [
+      {
+        "package": "dsh-client-ui-input-trigger",
+        "path": "src/client/locales.ts",
+        "sha256": "16ca0355d735a67ce7e565516c911de06a47fe3736ff50beb6e6ba4c460a8672"
+      }
+    ],
+    "job": [
+      {
+        "package": "dsh-client-ui-jobs",
+        "path": "src/client/locales.ts",
+        "sha256": "9e04ddcf708ce56c5ca716e380bee3ecd76f8ab7264a3d46b143495b01c04992"
+      }
+    ],
+    "shortcuts.layout": [
+      {
+        "package": "dsh-client-ui-layout",
+        "path": "src/client/shortcut-locales.ts",
+        "sha256": "5f151fba129e4cb5d50dd8ea59502fc6011df03b9b735a356986fd9211c28608"
+      }
+    ],
+    "feedback": [
+      {
+        "package": "dsh-client-ui-message-feedback",
+        "path": "src/client/locales.ts",
+        "sha256": "41a4b164e8957987084fc261af45bab7c9ee49a2e092c1092ecb6dafd6d36ce0"
+      }
+    ],
+    "model": [
+      {
+        "package": "dsh-client-ui-model-selection",
+        "path": "src/client/locales.ts",
+        "sha256": "18d7a56687ff7c6b36d0fb5669af669ef3bb86b5b0c39ab266cacb8f088c5f4a"
+      }
+    ],
+    "open-in-app": [
+      {
+        "package": "dsh-client-ui-open-in-app",
+        "path": "src/client/locales.ts",
+        "sha256": "11b8a3e182ab0da3e3d14a8b3a1aef3bb4da074d2f8302b93f0745c2170625bc"
+      }
+    ],
+    "permission.access": [
+      {
+        "package": "dsh-client-ui-permission-presets",
+        "path": "src/client/locales.ts",
+        "sha256": "ec72aa0078bf4bf0ce0f3ac07d87c76d15891fcdd19f3720677a82dfb35338e4"
+      }
+    ],
+    "settings.permission": [
+      {
+        "package": "dsh-client-ui-permission-presets",
+        "path": "src/client/locales.ts",
+        "sha256": "ec72aa0078bf4bf0ce0f3ac07d87c76d15891fcdd19f3720677a82dfb35338e4"
+      }
+    ],
+    "plan": [
+      {
+        "package": "dsh-client-ui-plan",
+        "path": "src/client/locales.ts",
+        "sha256": "a10cf85bceb28d20caea2fdc6f39b0d509f2f2cfb76228e42111f8ceded19040"
+      }
+    ],
+    "pluginManager": [
+      {
+        "package": "dsh-client-ui-plugin-manager",
+        "path": "src/client/locales.ts",
+        "sha256": "92fb58326cc32e249e7925352d45008fd7d9e3536ed1a03fdabf6152cc8f2c63"
+      }
+    ],
+    "pluginMarket": [
+      {
+        "package": "dsh-client-ui-plugin-market",
+        "path": "src/client/locales.ts",
+        "sha256": "6e87aa0c99da17140dcff7489ab75c718192553c6093af6ff30100072e6c0c98"
+      }
+    ],
+    "pluginRecommendations": [
+      {
+        "package": "dsh-client-ui-plugin-recommendations",
+        "path": "src/client/locales.ts",
+        "sha256": "92b957cc3a78cf0eee97784df0e7bd00955e7289080d5189c1925580f09179cf"
+      }
+    ],
+    "reference": [
+      {
+        "package": "dsh-client-ui-reference",
+        "path": "src/client/locales.ts",
+        "sha256": "00aee6b5cb882791d33261eb359b1401141d0851b29c57bff02f06c2fc5ffd58"
+      }
+    ],
+    "schedule.catalog": [
+      {
+        "package": "dsh-client-ui-schedule",
+        "path": "src/client/locales.ts",
+        "sha256": "7d3c34307f52a0928543dd505a2f52bbab26241495c6d5b790309d63e083707b"
+      }
+    ],
+    "schedule.manager": [
+      {
+        "package": "dsh-client-ui-schedule",
+        "path": "src/client/task-manager-locales.ts",
+        "sha256": "cc634e3eb7425b481f51c5238bf2eaaea33051a7e3cc5a7d96b8147a73dcae1d"
+      }
+    ],
+    "secretMask": [
+      {
+        "package": "dsh-client-ui-secret-mask",
+        "path": "src/client/locales.ts",
+        "sha256": "7e4a6d743f70ca8a0a0862a48086f642df051b4b26ac3c75d2c48ba2f8637f0d"
+      }
+    ],
+    "settings.account": [
+      {
+        "package": "dsh-client-ui-settings-account",
+        "path": "src/client/locales.ts",
+        "sha256": "94792d27d7f2e8891eb1001453b2eba4cb4d2a0d841e931ca88fa6e438722dce"
+      }
+    ],
+    "settings.agentLoop": [
+      {
+        "package": "dsh-client-ui-settings-agent-loop",
+        "path": "src/client/locales.ts",
+        "sha256": "ad845d58435bde6499d25e9407fe73858e52d420484ba3e79d87b5966a3069b4"
+      }
+    ],
+    "settings": [
+      {
+        "package": "dsh-client-ui-settings-general",
+        "path": "src/client/locales.ts",
+        "sha256": "8c6e1dfaa94da0c1eca09380880b2af4802b8268e8f1bb7f8ceaf87ac41049d4"
+      }
+    ],
+    "settings.models": [
+      {
+        "package": "dsh-client-ui-settings-models",
+        "path": "src/client/locales.ts",
+        "sha256": "0916c78b9b328fdcb2190abef9d965d285b9be45b6cceaf10a95e37a1113135f"
+      }
+    ],
+    "settings.pluginInventory": [
+      {
+        "package": "dsh-client-ui-settings-plugin-inventory",
+        "path": "src/client/locales.ts",
+        "sha256": "6eabed403ae57fc3710bc3f00b05af8dc888410e3641ef39855ba65728a4d8e8"
+      }
+    ],
+    "settings.plugins": [
+      {
+        "package": "dsh-client-ui-settings-plugins",
+        "path": "src/client/locales.ts",
+        "sha256": "4765f525db48171eac5ceeb77bc4d56e5e4e4726e4106e0895b70169d58ab977"
+      }
+    ],
+    "session-log-deepseek": [
+      {
+        "package": "dsh-client-ui-settings-session-log",
+        "path": "src/client/locales.ts",
+        "sha256": "d9596d5dbce012af756beb604085c3b64cbf77dcde696d7704407978aaaf794d"
+      }
+    ],
+    "settings.shell": [
+      {
+        "package": "dsh-client-ui-settings-shell",
+        "path": "src/client/locales.ts",
+        "sha256": "d4b487cce6e2b8c6d4c2de8e0623d3411ca86908a8fbca23fd3f608b690e3de5"
+      }
+    ],
+    "settings.subagent": [
+      {
+        "package": "dsh-client-ui-settings-subagent",
+        "path": "src/client/locales.ts",
+        "sha256": "e2b25ca4fee0bd3a706c0bca107c93995b5afa054266732e84f95d77b168870c"
+      }
+    ],
+    "settings.webSearch": [
+      {
+        "package": "dsh-client-ui-settings-web-search",
+        "path": "src/client/locales.ts",
+        "sha256": "f111165203965fade3b4cc1e4f9703c99360cac993c8c50848ad585838b67b6e"
+      }
+    ],
+    "shortcuts": [
+      {
+        "package": "dsh-client-ui-shortcuts",
+        "path": "src/client/locales.ts",
+        "sha256": "cdca3894ed33cffd9ac1ff0b5a5036a87983861ece01e518ea467cb6ed0f2338"
+      }
+    ],
+    "sidebar": [
+      {
+        "package": "dsh-client-ui-sidebar",
+        "path": "src/client/locales.ts",
+        "sha256": "e8c5d98bd691cf45882e78be4b30624731dac7abf9331bd3a99328103ec92ed3"
+      }
+    ],
+    "sidebarBrowser": [
+      {
+        "package": "dsh-client-ui-sidebar-browser",
+        "path": "src/client/locales.ts",
+        "sha256": "c1443907749770d62c3c9017ca422d002553be48cb70833810dfa5c3c0961f7c"
+      }
+    ],
+    "sidebarDocumentPreview": [
+      {
+        "package": "dsh-client-ui-sidebar-documentpreview",
+        "path": "src/client/locales.ts",
+        "sha256": "a5f253a6c9253cb28b73fe49f9406c168d0c991199d3a476d4ee8d92acb5af5d"
+      }
+    ],
+    "sidebarFiles": [
+      {
+        "package": "dsh-client-ui-sidebar-files",
+        "path": "src/client/locales.ts",
+        "sha256": "d8fea9fdd8caddbfd53c79962b57b7917aa8c7a48ab090ba7cc33e2ac042aa6a"
+      }
+    ],
+    "sidebarRight": [
+      {
+        "package": "dsh-client-ui-sidebar-right",
+        "path": "src/client/locales.ts",
+        "sha256": "3a64e8799d946cf7ecbff27b75001e56b5af3eb683462474844f20396af57c8c"
+      }
+    ],
+    "sidebarTerminal": [
+      {
+        "package": "dsh-client-ui-sidebar-terminal",
+        "path": "src/client/locales.ts",
+        "sha256": "b3e055f18dea7035db86c59920298099afd6c465525e764b4ee27021d9e35d24"
+      }
+    ],
+    "skill": [
+      {
+        "package": "dsh-client-ui-skill",
+        "path": "src/client/locales.ts",
+        "sha256": "f91637744af0ea09cbe0c7fc140ae300015236f35c04973c7bb4d45ca7ff63b0"
+      }
+    ],
+    "subagent": [
+      {
+        "package": "dsh-client-ui-subagent",
+        "path": "src/client/locales.ts",
+        "sha256": "57ceb6ac8e07f8d4619f7af0f9c58b1523ca7ecd1c32567d21f0b21a320aea20"
+      }
+    ],
+    "settings.theme": [
+      {
+        "package": "dsh-client-ui-theme",
+        "path": "src/client/locales.ts",
+        "sha256": "879d89d63a7f06982e8bd67a467d7dc3598783d1fca05f3dc1cf544aa049a30a"
+      }
+    ],
+    "trajectory": [
+      {
+        "package": "dsh-client-ui-trajectory",
+        "path": "src/client/locales.ts",
+        "sha256": "d7306c7bff8ef7c926537ff64263f201283a6d1429a70774759bc0ac87de878a"
+      }
+    ],
+    "question": [
+      {
+        "package": "dsh-client-ui-user-questions",
+        "path": "src/client/locales.ts",
+        "sha256": "92afb92fa8f1e1adbef10f952d12668d3588e8a260b9d1d8bf97c0e9a4f59e85"
+      }
+    ],
+    "workflowRun": [
+      {
+        "package": "dsh-client-ui-workflow-run",
+        "path": "src/client/locales.ts",
+        "sha256": "1ff393e5fa186dacce3ccea869207a7609d5c57fc20b16265429c26f788fdf61"
+      }
+    ],
+    "workspace": [
+      {
+        "package": "dsh-client-ui-workspace",
+        "path": "src/client/locales.ts",
+        "sha256": "9485a1f9ca84c59a25021212fe2df59110d5dcb8cf9c209e63b74ba750bda6f6"
+      }
+    ]
+  }
+}

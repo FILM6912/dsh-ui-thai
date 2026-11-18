@@ -1,0 +1,11 @@
+node_modules/
+verification/
+tools/discover.cjs
+tools/check-registration.cjs
+*.log
+*.tgz
+.env
+.env.*
+!.env.example
+.DS_Store
+Thumbs.db
